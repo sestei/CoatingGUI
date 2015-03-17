@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabMain">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -68,14 +68,14 @@
               <bold>false</bold>
              </font>
             </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
             <property name="styleSheet">
-             <string notr="true">text-align: right;</string>
+             <string notr="true"/>
             </property>
             <property name="editable">
              <bool>true</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::NoInsert</enum>
             </property>
            </widget>
           </item>
@@ -86,6 +86,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
@@ -121,11 +124,6 @@
           <attribute name="verticalHeaderVisible">
            <bool>false</bool>
           </attribute>
-          <row>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </row>
           <column>
            <property name="text">
             <string>Thickness (nm)</string>
@@ -133,22 +131,9 @@
           </column>
           <column>
            <property name="text">
-            <string>Refr. Index</string>
+            <string>Material/Refr. Index</string>
            </property>
           </column>
-          <item row="0" column="0">
-           <property name="text">
-            <string>266</string>
-           </property>
-           <property name="textAlignment">
-            <set>AlignRight|AlignVCenter</set>
-           </property>
-          </item>
-          <item row="0" column="1">
-           <property name="text">
-            <string>2.2</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item>
@@ -226,6 +211,9 @@
            <widget class="QComboBox" name="cbSubstrate">
             <property name="editable">
              <bool>true</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::NoInsert</enum>
             </property>
            </widget>
           </item>

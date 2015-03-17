@@ -88,9 +88,15 @@ class MainWindow(QMainWindow):
 
     def initialise_stack(self):
         with block_signals(self.cbSuperstrate) as cb:
-            cb.insertItem(0, self.config.get('coating.superstrate'))
+            m = self.config.get('coating.superstrate')
+            if cb.findText(m) < 0:
+                cb.insertItem(0, m)
+            cb.setCurrentIndex(cb.findText(m))
         with block_signals(self.cbSubstrate) as cb:
-            cb.insertItem(0, self.config.get('coating.substrate'))
+            m = self.config.get('coating.substrate')
+            if cb.findText(m) < 0:
+                cb.insertItem(0, m)
+            cb.setCurrentIndex(cb.findText(m))
         self.txtLambda0.setText(str(self.config.get('coating.lambda0')))
         self.txtAOI.setText(str(self.config.get('coating.AOI')))
 
@@ -297,9 +303,25 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def update_material_list(self):
+        # save selection
+        sub = str(self.cbSubstrate.currentText())
+        sup = str(self.cbSuperstrate.currentText())
+        materials = [m for m in self.materials.list_materials()]
         self.lstMaterials.clear()
-        for material in self.materials.list_materials():
-            self.lstMaterials.addItem(material)
+        self.cbSuperstrate.clear()
+        self.cbSubstrate.clear()
+        self.lstMaterials.addItems(materials)
+        with block_signals(self.cbSubstrate) as cbsub, block_signals(self.cbSuperstrate) as cbsup:
+            cbsub.addItems(sorted(materials))
+            cbsup.addItems(sorted(materials))
+            # if user added a numeric refractive index value, copy that back in
+            if sub and not sub in materials:
+                cbsub.addItem(sub)
+            if sup and not sup in materials:
+                cbsup.addItem(sup)
+            # restore selection
+            cbsub.setCurrentIndex(self.cbSubstrate.findText(sub))
+            cbsup.setCurrentIndex(self.cbSuperstrate.findText(sup))
 
     @pyqtSlot()
     def on_btnAddMaterial_clicked(self):
@@ -326,6 +348,9 @@ class MainWindow(QMainWindow):
             material = str(self.lstMaterials.item(row).text())
             materials.MaterialLibrary.Instance().unregister(material)
             self.lstMaterials.takeItem(row)
+            self.cbSuperstrate.removeItem(self.cbSuperstrate.findText(material))
+            self.cbSubstrate.removeItem(self.cbSubstrate.findText(material))
+
 
     ### SLOTS - MENU
 
