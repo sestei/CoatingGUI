@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
+import matplotlib
 from config import Config
 
 
@@ -73,20 +74,24 @@ class PlotContainer(object):
     def plot_reflectivity_wavelength(plot, coating):
         "Reflectivity vs. wavelength"
 
+        def to_refl(val, position):
+            refl = 1-10**(-val)
+            return '{:.7g}'.format(refl)
+
+        yLocator = matplotlib.ticker.MultipleLocator(1.0)
+        yFormatter = matplotlib.ticker.FuncFormatter(to_refl)
+        
         config = Config.Instance()
         #TODO: this assumes linear x axis, but log x axis maybe doesn't make much sense anyway
-        #TODO: we need an angle of incidence definable somewhere!
         #TODO: refactor this into another function, which can be used to plot transmission as well
         
         if config.get('plot.xaxis.limits') == 'auto':
             lambda0 = config.get('coating.lambda0')
-            xmin = 0.7 * lambda0
-            xmax = 1.3 * lambda0
+            xlim = [0.7 * lambda0, 1.3 * lambda0]
         else:
-            xmin = config.get('plot.xaxis.min')
-            xmax = config.get('plot.xaxis.max')
+            xlim = [config.get('plot.xaxis.min'), config.get('plot.xaxis.max')]
         
-        X = np.linspace(xmin, xmax, config.get('plot.xaxis.steps'))
+        X = np.linspace(*xlim, num=config.get('plot.xaxis.steps'))
         Y = np.zeros((len(X), 2))
 
         AOI = config.get('coating.AOI')
@@ -94,18 +99,32 @@ class PlotContainer(object):
             stack = coating.create_stack(X[step], AOI=AOI)
             Y[step,:] = stack.reflectivity(X[step])
 
-        handles = plot.plot(X,Y*100.0)
+        auto_y = config.get('plot.yaxis.limits') == 'auto'
         
-        plot.set_xlim(xmin, xmax)
-        if config.get('plot.yaxis.limits') == 'auto':
-            plot.set_ylim(0, 100.0)
-        else:
-            plot.set_ylim(config.get('plot.yaxis.min'), config.get('plot.yaxis.max'))
+        ylim = [config.get('plot.yaxis.min'), config.get('plot.yaxis.max')]
+        
+        if config.get('plot.yaxis.scale') == 'log':
+            Y = -np.log10(1.0-Y)
+            if auto_y:
+                ylim[0] = 0.3
+                ylim[1] = np.ceil(np.max(Y))
+            else:
+                ylim[0] = -np.log10(1.0-ylim[0])
+                ylim[1] = -np.log10(1.0-ylim[1]+1e-6)
 
+        handles = plot.plot(X,Y)
+
+        plot.grid(which='both')
+        plot.set_xlim(xlim)
+        plot.set_ylim(ylim)
+        
         if config.get('plot.yaxis.scale') == "log":
             plot.set_yscale('log')
+            plot.yaxis.set_major_formatter(yFormatter)
+            plot.yaxis.set_major_locator(yLocator)
+
         plot.set_xlabel('Wavelength (nm)')
-        plot.set_ylabel('Reflectivity (%)')
+        plot.set_ylabel('Reflectivity')
         plot.legend(handles, ['s pol', 'p pol'])
         add_copyright(plot)
 
