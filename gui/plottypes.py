@@ -160,6 +160,7 @@ class PlotContainer(object):
 
         if config.get('plot.yaxis.scale') == "log":
             plot.set_yscale('log')
+        plot.grid(which='both')
         plot.set_xlabel('AOI (deg)')
         plot.set_ylabel('Reflectivity (%)')
         plot.legend(handles, ['s pol', 'p pol'])
@@ -202,6 +203,9 @@ class PlotContainer(object):
 
         if config.get('plot.yaxis.scale') == "log":
             plot.set_yscale('log')
+        plot.grid(which='major', color='0.7', linestyle='-')
+        plot.grid(which='minor', color='0.7', linestyle=':')
+        plot.minorticks_on()
         plot.set_xlabel('Wavelength (nm)')
         plot.set_ylabel('Phase (deg)')
         plot.legend(handles, ['s pol', 'p pol', 'delta'])
