@@ -5,6 +5,7 @@ from PyQt4.QtGui import *
 from PyQt4 import uic
 from config import Config
 from materials import MaterialLibrary
+import math
 
 class UnnamedMaterialException(Exception):
     pass
@@ -34,32 +35,28 @@ class MaterialDialog(QDialog):
             self.txtName.setText(material)
             self.txtName.setEnabled(False)
             self.txtNotes.setPlainText(mat['notes'])
-            if mat['type'] == 'BaseMaterial':
-                self.load_base_material(mat)
-            elif mat['type'] == 'OpticalMaterial':
-                self.load_optical_material(mat)
-            elif mat['type'] == 'MechanicalMaterial':
-                self.load_optical_material(mat)
-                self.load_mechanical_material(mat)
+            self.load_optical_properties(mat)
+            self.load_mechanical_properties(mat)
         else:
             self.txtName.setText('New Material')
 
-    def load_base_material(self, mat):
-        self.rbRefrIndex.setChecked(True)
-        self.txtRefrIndex.setText(str(mat['n']))
+    def load_optical_properties(self, mat):
+        if mat['B'][1:] == [0.0, 0.0] and mat['C'] == [0.0, 0.0, 0.0]:
+            n = math.sqrt(mat['B'][0] + 1.0)
+            self.txtRefrIndex.setText(str(n))
+            self.rbRefrIndex.setChecked(True)
+        else:
+            B = map(str, mat['B'])
+            C = map(str, mat['C'])
+            self.txtB1.setText(B[0])
+            self.txtB2.setText(B[1])
+            self.txtB3.setText(B[2])
+            self.txtC1.setText(C[0])
+            self.txtC2.setText(C[1])
+            self.txtC3.setText(C[2])
+            self.rbSellmeier.setChecked(True)
 
-    def load_optical_material(self, mat):
-        B = map(str, mat['B'])
-        C = map(str, mat['C'])
-        self.txtB1.setText(B[0])
-        self.txtB2.setText(B[1])
-        self.txtB3.setText(B[2])
-        self.txtC1.setText(C[0])
-        self.txtC2.setText(C[1])
-        self.txtC3.setText(C[2])
-        self.rbSellmeier.setChecked(True)
-
-    def load_mechanical_material(self, mat):
+    def load_mechanical_properties(self, mat):
         pass
 
     def save_material(self):
@@ -70,35 +67,29 @@ class MaterialDialog(QDialog):
         mat = {}
         mat['notes'] = str(self.txtNotes.toPlainText())
         
-        if self.rbRefrIndex.isChecked():
-            mat = self.save_to_base_material(mat)
-        else:
-            mat = self.save_to_optical_material(mat)
-        #TODO: MechanicalMaterial
-
+        mat = self.save_optical_properties(mat)
+        mat = self.save_mechanical_properties(mat)
+        
         if self.old_name:
             self.materials.unregister(self.old_name)
         self.materials.load_materials({material: mat})
         self.materials.save_material(material)
 
-    def save_to_base_material(self, mat):
-        mat['type'] = 'BaseMaterial'
-        mat['n'] = get_float(self.txtRefrIndex.text(), 1.0)
-        return mat
-
-    def save_to_optical_material(self, mat):
+    def save_optical_properties(self, mat):
         B = [0.0, 0.0, 0.0]
         C = [0.0, 0.0, 0.0]
-        B[0] = get_float(self.txtB1.text())
-        B[1] = get_float(self.txtB2.text())
-        B[2] = get_float(self.txtB3.text())
-        C[0] = get_float(self.txtC1.text())
-        C[1] = get_float(self.txtC2.text())
-        C[2] = get_float(self.txtC3.text())
-        mat['type'] = 'OpticalMaterial'
+        if self.rbRefrIndex.isChecked():
+            B[0] = get_float(self.txtRefrIndex.text(), 1.0)**2 - 1.0
+        else:
+            B[0] = get_float(self.txtB1.text())
+            B[1] = get_float(self.txtB2.text())
+            B[2] = get_float(self.txtB3.text())
+            C[0] = get_float(self.txtC1.text())
+            C[1] = get_float(self.txtC2.text())
+            C[2] = get_float(self.txtC3.text())
         mat['B'] = B
         mat['C'] = C
         return mat
 
-    def save_mechanical_material(self, mat):
-        pass
+    def save_mechanical_properties(self, mat):
+        return mat

@@ -1,5 +1,6 @@
+do_not_ask_on_quit: 1
 plot:
-  plottype: 0 
+  plottype: 3 
   xaxis:
     limits: "auto"
     min: 800
@@ -38,41 +39,34 @@ coating:
   - [2.1, 127]
 materials:
   Air:
-    type: BaseMaterial
-    n: 1.0
+    B: [0.0, 0.0, 0.0]
+    C: [0.0, 0.0, 0.0]
     notes: ''
   Corning 7980:
-    type: OpticalMaterial
     B: [0.68374049400,0.42032361300,0.58502748000]
     C: [0.00460352869,0.01339688560,64.49327320000]
     notes: Corning datasheet
   N-BK7:
-    type: OpticalMaterial
     B: [1.0396, 0.2318, 1.0105]
     C: [0.0060, 0.0200, 103.5607]
     notes: Thorlabs
   Sapphire:
-    type: OpticalMaterial
     B: [1.4313,0.6505,5.3414]
     C: [0.0053,0.0143,325.0178]
     notes: Thorlabs, ordinary ray
   Silicon:
-    type: OpticalMaterial
     B: [10.6684, 0.0030, 1.5413]
     C: [0.3015,1.1348,1104.0]
     notes: Thorlabs
   MgF2:
-    type: OpticalMaterial
     B: [0.4876,0.3988,2.312]
     C: [0.0054804, 0.0089519, 0.056614]
     notes: Thorlabs, ordinary ray
   Germanium:
-    type: OpticalMaterial
     B: [8.28743, 6.73276, 0.29259]
     C: [0, 0.44105, 3870.1]
     notes: Barnes and Piltch, JOSA, Vol. 69, Issue 1, pp. 178-180 (1979)
   Suprasil:
-    type: OpticalMaterial
     B: [0.473115591,0.631038719,0.906404498]
     C: [0.0129957170,0.00412809220,98.7685322]
     notes: Heraeus datasheet

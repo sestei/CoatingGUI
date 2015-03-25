@@ -103,6 +103,9 @@
         </item>
         <item>
          <widget class="QTableWidget" name="tblStack">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter name of defined material or just refractive index.&lt;/p&gt;&lt;p&gt;Use l/n or just /n to get a lambda/n layer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
@@ -115,8 +118,11 @@
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
-          <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-           <bool>false</bool>
+          <attribute name="horizontalHeaderCascadingSectionResizes">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>130</number>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>true</bool>
@@ -126,12 +132,12 @@
           </attribute>
           <column>
            <property name="text">
-            <string>Thickness (nm)</string>
+            <string>Material/Refr. Index</string>
            </property>
           </column>
           <column>
            <property name="text">
-            <string>Material/Refr. Index</string>
+            <string>Thickness (nm)</string>
            </property>
           </column>
          </widget>
@@ -757,7 +763,7 @@
    <addaction name="menuFile"/>
    <addaction name="menuPlot"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="stbStatus"/>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>

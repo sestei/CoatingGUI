@@ -9,7 +9,8 @@ class Coating(object):
         self.superstrate = MaterialLibrary.Instance().get_material(superstrate)
         self.substrate = MaterialLibrary.Instance().get_material(substrate)
         self.layers = [Layer(m, t) for m, t in layers]
-
+        self.thickness = sum([l.thickness for l in self.layers])
+        
     def create_stack(self, lambda0, AOI=0.0):
         """
         Returns an optical stack for a specific wavelength and AOI.

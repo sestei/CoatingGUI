@@ -11,6 +11,7 @@ from config import Config
 from utils import block_signals
 from materialDialog import MaterialDialog
 import materials
+import re
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -21,13 +22,17 @@ class MainWindow(QMainWindow):
         uic.loadUi('gui/ui_mainWindow.ui', self)
  
         self.plotHandle = self.pltMain.figure.add_subplot(111)
-        
+        cid = self.pltMain.figure.canvas.mpl_connect('motion_notify_event', 
+            lambda ev: self.mpl_on_mouse_move(ev))
+
         self.update_title('untitled')
         self.config.modified.connect(self.handle_modified)
 
         self.initialise_plotoptions()
         self.initialise_materials()
         self.initialise_stack()
+
+        self.stbStatus.showMessage('Coating GUI v1.0')
 
     def update_title(self, filename=None, changed=False):
         if changed:
@@ -112,18 +117,21 @@ class MainWindow(QMainWindow):
                 it = QTableWidgetItem(str(layers[ii][0]))
                 tt.setTextAlignment(Qt.AlignRight)
                 it.setTextAlignment(Qt.AlignRight)
-                tbl.setItem(ii,0,tt)
-                tbl.setItem(ii,1,it)
+                tbl.setItem(ii,1,tt)
+                tbl.setItem(ii,0,it)
 
     def get_layers(self):
         stack_d = []
         stack_n = []
         for row in range(self.tblStack.rowCount()):
-            item_d = self.tblStack.item(row, 0)
-            item_n = self.tblStack.item(row, 1)
+            item_d = self.tblStack.item(row, 1)
+            item_n = self.tblStack.item(row, 0)
             if item_d and item_n:
-                stack_d.append(str(item_d.text()))
-                stack_n.append(str(item_n.text()))
+                try:
+                    stack_d.append(float(item_d.text()))
+                    stack_n.append(str(item_n.text()))
+                except ValueError:
+                    self.float_conversion_error(str(item_d.text()))
         return map(list, zip(stack_n, stack_d))
 
     def build_coating(self):
@@ -133,7 +141,7 @@ class MainWindow(QMainWindow):
         return Coating(superstrate, substrate, self.get_layers())
         
     def closeEvent(self, event):
-        if self.modified:
+        if self.modified and not self.config.get('do_not_ask_on_quit'):
             reply = QMessageBox.question(self, 'Unsaved Changes',
                         'You have unsaved changes, do you really want to discard those and quit?',
                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -151,7 +159,14 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def handle_modified(self):
         self.update_title(changed=True)
-    
+
+    # matplotlib slot
+    def mpl_on_mouse_move(self, event):
+        if event.xdata and event.ydata:
+            yformat = self.plotHandle.yaxis.get_major_formatter()
+            xformat = self.plotHandle.xaxis.get_major_formatter()
+            self.stbStatus.showMessage(u'x={:} y={:}'.format(xformat.format_data_short(event.xdata),
+                                                             yformat.format_data_short(event.ydata)))    
     
     ### SLOTS - PLOT WINDOW
 
@@ -209,6 +224,22 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(int, int)
     def on_tblStack_cellChanged(self, row, col):
+        txt = self.tblStack.item(row, col).text()
+        if col == 1:
+            # auto-convert L/x or l/x to lambda/x thicknesses
+            m = re.match('^[Ll]?/(\d+)$', txt)
+            if m:
+                lox = int(m.groups()[0])
+                mat = self.tblStack.item(row, col-1).text()
+                try:
+                    mat = self.materials.get_material(str(mat))
+                    lambda0 = self.config.get('coating.lambda0')
+                    t_lox = lambda0/(mat.n(lambda0) * lox)
+                    with block_signals(self.tblStack) as tbl:
+                        tbl.item(row, col).setText('{:.1f}'.format(t_lox))
+                except materials.MaterialNotDefined:
+                    pass
+
         self.config.set('coating.layers', self.get_layers())
 
     @pyqtSlot()
