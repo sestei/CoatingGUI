@@ -51,6 +51,9 @@ class TestStack(unittest.TestCase):
     def test_reflectivity(self):
         """
         Simulate HR@1064nm, HT@808nm stack, check reflectivity at 1064nm
+
+        From:
+        http://www.rp-photonics.com/coating_demo_dichroic.html
         """
         n_sio = 1.45
         n_ta = 2.35
@@ -62,8 +65,8 @@ class TestStack(unittest.TestCase):
 
         rs, rp = stack.reflectivity(1064)
 
-        self.assertAlmostEqual(rs, 0.999315645, 8)
-        self.assertAlmostEqual(rp, 0.999315645, 8)
+        self.assertAlmostEqual(rs, 0.9986317, 6)
+        self.assertAlmostEqual(rp, 0.9986317, 6)
 
 if __name__ == '__main__':
     unittest.main()

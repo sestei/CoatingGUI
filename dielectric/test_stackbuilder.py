@@ -22,9 +22,6 @@ class TestStackBuilder(unittest.TestCase):
             stack.stacks_n == np.array([1.0, 2.0, 1.0, 1.0, 2.0])))
         self.assertTrue(np.all(
             stack.stacks_d == np.array([.25, 0.25, 0.25])))
-
-    def test_quarter_wave_stack_angle(self):
-        stack = StackBuilder.half_wave_stack(1, [1.0, 1.0], [1.0, 2.0], 1.0, 45.0)
-
+    
 if __name__ == '__main__':
     unittest.main()
