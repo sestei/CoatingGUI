@@ -20,17 +20,11 @@ Screenshots
 -----------
 
 <img src="refl_vs_wavelength.png" />
-<<<<<<< HEAD
 
 Plot of reflectivity vs. wavelength for a multi-layer, quarter-wave stack HR coating.
 
 <img src="refr_index_profile.png" />
 
-=======
-Plot of reflectivity vs. wavelength for a multi-layer, quarter-wave stack HR coating.
-
-<img src="refl_index_profile.png" />
->>>>>>> 45b25a3b2fba31511a2fb7d97bb48fb56fc06d6d
 Plot of the refractive index profile for the above coating. The table on the left is used
 to enter the stack, note how inputs like "l/4" or just "/4" are automatically converted
 to the corresponding lambda/N thickness for the given refractive index.
