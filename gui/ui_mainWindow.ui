@@ -705,7 +705,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
       <item>
-       <widget class="MatplotlibWidget" name="pltMain"/>
+       <widget class="MatplotlibWidget" name="pltMain" native="true"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -794,7 +794,7 @@
   <customwidget>
    <class>MatplotlibWidget</class>
    <extends>QWidget</extends>
-   <header>matplotlibwidget</header>
+   <header>gui.matplotlibwidget</header>
   </customwidget>
  </customwidgets>
  <resources/>
