@@ -92,6 +92,53 @@ class Stack(object):
 
         return Ms, Mp
 
+#    def efi(self, wavelength):
+#        deltas = np.zeros(len(self._stacks_rho))
+#        deltas[1:] = delta(self._stacks_d,
+#                           self._stacks_n[1:-1],
+#                           self._stacks_a[0:-1],
+#                           wavelength)
+#        # start at substrate, where there is no backwards propagating field
+#        R = self.reflectivity(wavelength)[0]
+#        print R
+#        Esubs = np.sqrt((1.0 - R)/self._stacks_n[-1])
+#        print "Subs E^2: %.3f" % abs(Esubs)**2
+#        EFI = np.zeros(len(self._stacks_rho))
+#        ii = 0
+#        Ej = Esubs
+#        for r, p in reversed(zip(self._stacks_rho, deltas)):
+#            r = r[1]
+#            Ej = (1+r)*np.exp(1j*p)/(1-r*np.exp(2j*p)) * Ej
+#            print "%d: phi=%.3f, r=%.3f" % (ii, p, r)
+#            EFI[ii] = abs(Ej)**2
+#            ii += 1
+#        #EFI *= Esubs / EFI[-1]
+#        print EFI
+
+    def efi(self, wavelength):
+        R = self.reflectivity(wavelength)[0]
+        print "trying EFI calculation"
+        Esubs = np.sqrt(1.0 - R)
+        print "Subs E^2: %.3f" % abs(Esubs)**2
+
+        def get_phi(n, d):
+            return 2*np.pi*n*d/wavelength
+
+        layers = 2
+        EFI = np.zeros(layers+1)
+        EFI[0] = abs(Esubs)**2 / self._stacks_n[-1]
+        Ej = Esubs
+        for ii in range(0, layers):
+            r = self._stacks_rho[-1-ii][1]
+            n = self._stacks_n[-2-ii]
+            d = self._stacks_d[-1-ii]
+            p = get_phi(n, d)
+            print n, r, d, p
+            Ej = (1+r)*np.exp(1j*p)/(1+r*np.exp(2j*p)) * Ej
+            EFI[ii+1] = abs(Ej)**2
+        print EFI
+
+
     def reflectivity(self, wavelength):
         Ms, Mp = self._propagate(wavelength)
 

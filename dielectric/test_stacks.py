@@ -55,8 +55,8 @@ class TestStack(unittest.TestCase):
         From:
         http://www.rp-photonics.com/coating_demo_dichroic.html
         """
-        n_sio = 1.45
-        n_ta = 2.35
+        n_sio = 1.434
+        n_ta = 2.299
 
         stacks_n = np.array([1.0,n_sio] + [n_ta, n_sio]*8)
         stacks_n[-1] = 1.52
@@ -64,9 +64,10 @@ class TestStack(unittest.TestCase):
         stack = stacks.Stack(stacks_n, stacks_d)
 
         rs, rp = stack.reflectivity(1064)
+        stack.efi(808)
 
-        self.assertAlmostEqual(rs, 0.9986317, 6)
-        self.assertAlmostEqual(rp, 0.9986317, 6)
+        self.assertAlmostEqual(rs, 0.9982097, 6)
+        self.assertAlmostEqual(rp, 0.9982097, 6)
 
 if __name__ == '__main__':
     unittest.main()
