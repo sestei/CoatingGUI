@@ -31,12 +31,14 @@ class PlotContainer(object):
 
     @staticmethod
     def plot_refractive_index(plot, coating):
-        "Refractive index profile"
+        "Electric Field Intensity"
 
-        stack = coating.create_stack(Config.Instance().get('coating.lambda0'))
+        config = Config.Instance()
+        wavelength = config.get('coating.lambda0')
+        stack = coating.create_stack(wavelength)
         total_d = np.sum(stack.stacks_d)
-        xmin = -0.2*total_d
-        xmax = total_d - xmin
+        xmin = -0.5 * wavelength / stack.stacks_n[0]
+        xmax = total_d + 0.5 * wavelength / stack.stacks_n[-1]
         xvalues = len(stack.stacks_d) * 2 + 4
         X = np.zeros(xvalues)
         Y = np.zeros(xvalues)
@@ -51,7 +53,15 @@ class PlotContainer(object):
             Y[ii*2] = Y[ii*2+1] = n
             current_d += d
             ii += 1
+        
         plot.plot(X,Y)
+        ax2 = plot.twinx()
+        ax2.grid(True)
+        ax2.set_ylabel('Electric Field Intensity')
+        if config.get('plot.yaxis.scale') == "log":
+            ax2.set_yscale('log')
+        Xefi,Yefi = stack.efi(wavelength)
+        ax2.plot(Xefi,Yefi,'r')
 
         for ii in range(0, xvalues/2):
             plot.axvspan(X[ii*2], X[ii*2+1], color=(0.52,0.61,0.73), alpha=get_alpha(Y[ii*2]))

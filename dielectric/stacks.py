@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
+from itertools import izip
 import fresnel
 
 class StackException(Exception):
@@ -91,6 +92,72 @@ class Stack(object):
             Mp = Mp * M(r[1], p)
 
         return Ms, Mp
+
+    def efi(self, wavelength, steps=30):
+        # EFI calculation following Arnon/Baumeister 1980
+        # TODO: this needs to be combined with the above calculation, can't be
+        #       that difficult!
+        # TODO: AOI is not taken into account for now, as well as s/p distinction
+
+        def M_i(beta_i, q_i):
+            return np.matrix([[np.cos(beta_i), 1j/q_i * np.sin(beta_i)],
+                              [1j*q_i*np.sin(beta_i), np.cos(beta_i)]])
+
+        def beta_i(theta_i, n_i, h_i):
+            return 2*np.pi/wavelength*np.cos(theta_i)*n_i*h_i
+
+        def q_i(n_i):
+            return n_i # for now, but see (5) and (6) of Arnon/Baumeister 1980
+                       # for non-normal incidence
+
+        def _M():
+            myM = np.eye(2)
+            for n_i, h_i in izip(self._stacks_n[1:-1], self._stacks_d):
+                myM = myM * M_i(beta_i(0.0, n_i, h_i), q_i(n_i))
+            return myM
+
+        def E0p2(myM):  # (10) 
+            q0 = q_i(self._stacks_n[0])
+            qs = q_i(self._stacks_n[-1])
+            # possibly need 1j*m12 etc. here?
+            return 0.25*( abs(myM[0,0]+myM[1,1]*qs/q0)**2 
+                         +abs(myM[1,0]/q0 + myM[0,1] * qs)**2 )
+
+        def deltaM(beta_i, q_i): # (11)
+            return M_i(beta_i, -q_i)
+
+        X = np.zeros(steps*self._layers)
+        E2 = np.zeros(steps*self._layers)
+        curX = 0.0
+        myM = _M()
+        myMz = myM
+        qs = q_i(self._stacks_n[-1])
+        # propagate through stack, where steps is the number of points
+        # calculated for each layer
+        for ii in range(0, self._layers):
+            n_i = self._stacks_n[ii]
+            if ii == 0:
+                deltaL = -wavelength / 2.0 / n_i / steps
+            elif ii == self._layers-1:
+                deltaL = wavelength / 2.0 / n_i / steps
+            else:
+                deltaL = self._stacks_d[ii-1] / steps
+            
+            for jj in range(0, steps):
+                curX += deltaL
+                X[ii*steps + jj] = curX
+                myMz = deltaM(beta_i(0.0, n_i, deltaL), q_i(n_i)) * myMz # (13)
+                E2[ii*steps + jj] = abs(myMz[0,0])**2 + abs(qs/1j*myMz[0,1])**2 # (14)
+
+            if ii == 0:
+                myMz = myM # reset matrix after superstrate calculations as we're now
+                           # going in the other direction, into the coating
+                curX = 0.0
+
+        X[0:steps] = X[steps-1::-1] # reverse first elements
+        E2[0:steps] = E2[steps-1::-1]
+
+        return (X, E2/E0p2(myM))
 
     def reflectivity(self, wavelength):
         Ms, Mp = self._propagate(wavelength)

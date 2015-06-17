@@ -178,6 +178,9 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, 'Material Error', str(e))
             return
         plotidx = self.cbPlotType.currentIndex()
+        
+        self.pltMain.figure.clear()
+        self.plotHandle = self.pltMain.figure.add_subplot(111)
         plottypes[plotidx][1](self.plotHandle, coating)
         self.pltMain.draw()
 
