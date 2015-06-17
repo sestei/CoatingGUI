@@ -93,7 +93,7 @@ class Stack(object):
 
         return Ms, Mp
 
-    def efi(self, wavelength, steps=10):
+    def efi(self, wavelength, steps=30):
         # EFI calculation following Arnon/Baumeister 1980
         # TODO: this needs to be combined with the above calculation, can't be
         #       that difficult!
@@ -126,53 +126,38 @@ class Stack(object):
         def deltaM(beta_i, q_i): # (11)
             return M_i(beta_i, -q_i)
 
-        layers = self._layers - 2  # remove sub- and superstrate
-        X = np.zeros(steps*layers)
-        E2 = np.zeros(steps*layers)
+        X = np.zeros(steps*self._layers)
+        E2 = np.zeros(steps*self._layers)
         curX = 0.0
         myM = _M()
         myMz = myM
         qs = q_i(self._stacks_n[-1])
         # propagate through stack, where steps is the number of points
         # calculated for each layer
-        for ii in range(0, layers):
-            deltaL = self._stacks_d[ii] / steps
-            n_i = self._stacks_n[ii+1]
+        for ii in range(0, self._layers):
+            n_i = self._stacks_n[ii]
+            if ii == 0:
+                deltaL = -wavelength / 2.0 / n_i / steps
+            elif ii == self._layers-1:
+                deltaL = wavelength / 2.0 / n_i / steps
+            else:
+                deltaL = self._stacks_d[ii-1] / steps
+            
             for jj in range(0, steps):
                 curX += deltaL
                 X[ii*steps + jj] = curX
                 myMz = deltaM(beta_i(0.0, n_i, deltaL), q_i(n_i)) * myMz # (13)
                 E2[ii*steps + jj] = abs(myMz[0,0])**2 + abs(qs/1j*myMz[0,1])**2 # (14)
 
-        print E0p2(myM)
-        # TESTING GIVES A ComplexWarning: investigate!!!
+            if ii == 0:
+                myMz = myM # reset matrix after superstrate calculations as we're now
+                           # going in the other direction, into the coating
+                curX = 0.0
+
+        X[0:steps] = X[steps-1::-1] # reverse first elements
+        E2[0:steps] = E2[steps-1::-1]
+
         return (X, E2/E0p2(myM))
-
-
-    # def efi(self, wavelength):
-    #     R = self.reflectivity(wavelength)[0]
-    #     print "trying EFI calculation"
-    #     Esubs = 1.0 - R
-    #     print "Subs E^2: %.3f" % Esubs
-
-    #     def get_phi(n, d):
-    #         return 2*np.pi*n*d/wavelength
-
-    #     layers = len(self._stacks_d)
-    #     EFI = np.zeros(layers+1)
-    #     EFI[0] = Esubs / self._stacks_n[-1]
-    #     Ej = Esubs
-    #     # do I maybe need to add in the very first rho, i.e. from substrate to first layer?
-    #     for ii in range(0, layers):
-    #         r = self._stacks_rho[-1-ii][0]
-    #         n = self._stacks_n[-2-ii]
-    #         d = self._stacks_d[-1-ii]
-    #         p = get_phi(n, d)
-    #         print n, r, d, p
-    #         Ej = (1+r)*np.exp(1j*p)/(1+r*np.exp(2j*p)) * Ej
-    #         EFI[ii+1] = abs(Ej)**2
-    #     print EFI
-
 
     def reflectivity(self, wavelength):
         Ms, Mp = self._propagate(wavelength)

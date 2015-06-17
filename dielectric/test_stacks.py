@@ -79,8 +79,8 @@ class TestStack(unittest.TestCase):
 
         rs, rp = stack.reflectivity(1550)
         print("Reflectivity: {:.2f}%".format(rs*100))
-        x,y = stack.efi(1550)
-        pl.plot(x,y,'-x')
+        x,y = stack.efi(1550,30)
+        pl.plot(x,y,'-')
         pl.show()
 
 
