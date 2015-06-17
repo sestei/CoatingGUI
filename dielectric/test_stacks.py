@@ -64,10 +64,25 @@ class TestStack(unittest.TestCase):
         stack = stacks.Stack(stacks_n, stacks_d)
 
         rs, rp = stack.reflectivity(1064)
-        stack.efi(808)
-
+        
         self.assertAlmostEqual(rs, 0.9982097, 6)
         self.assertAlmostEqual(rp, 0.9982097, 6)
+
+    def test_efi(self):
+        import pylab as pl
+        n_sio = 1.434
+        n_ta = 2.05
+
+        stacks_n = np.array([1.0, n_sio, n_ta, n_sio, n_ta, n_sio, 1.5163]) # matches "GLASS" in TFcalc
+        stacks_d = np.array([270.22,189.02,270.22,189.02,270.22])
+        stack = stacks.Stack(stacks_n, stacks_d)
+
+        rs, rp = stack.reflectivity(1550)
+        print("Reflectivity: {:.2f}%".format(rs*100))
+        x,y = stack.efi(1550)
+        pl.plot(x,y,'-x')
+        pl.show()
+
 
 if __name__ == '__main__':
     unittest.main()

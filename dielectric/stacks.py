@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
+from itertools import izip
 import fresnel
 
 class StackException(Exception):
@@ -92,51 +93,85 @@ class Stack(object):
 
         return Ms, Mp
 
-#    def efi(self, wavelength):
-#        deltas = np.zeros(len(self._stacks_rho))
-#        deltas[1:] = delta(self._stacks_d,
-#                           self._stacks_n[1:-1],
-#                           self._stacks_a[0:-1],
-#                           wavelength)
-#        # start at substrate, where there is no backwards propagating field
-#        R = self.reflectivity(wavelength)[0]
-#        print R
-#        Esubs = np.sqrt((1.0 - R)/self._stacks_n[-1])
-#        print "Subs E^2: %.3f" % abs(Esubs)**2
-#        EFI = np.zeros(len(self._stacks_rho))
-#        ii = 0
-#        Ej = Esubs
-#        for r, p in reversed(zip(self._stacks_rho, deltas)):
-#            r = r[1]
-#            Ej = (1+r)*np.exp(1j*p)/(1-r*np.exp(2j*p)) * Ej
-#            print "%d: phi=%.3f, r=%.3f" % (ii, p, r)
-#            EFI[ii] = abs(Ej)**2
-#            ii += 1
-#        #EFI *= Esubs / EFI[-1]
-#        print EFI
+    def efi(self, wavelength, steps=10):
+        # EFI calculation following Arnon/Baumeister 1980
+        # TODO: this needs to be combined with the above calculation, can't be
+        #       that difficult!
+        # TODO: AOI is not taken into account for now, as well as s/p distinction
 
-    def efi(self, wavelength):
-        R = self.reflectivity(wavelength)[0]
-        print "trying EFI calculation"
-        Esubs = np.sqrt(1.0 - R)
-        print "Subs E^2: %.3f" % abs(Esubs)**2
+        def M_i(beta_i, q_i):
+            return np.matrix([[np.cos(beta_i), 1j/q_i * np.sin(beta_i)],
+                              [1j*q_i*np.sin(beta_i), np.cos(beta_i)]])
 
-        def get_phi(n, d):
-            return 2*np.pi*n*d/wavelength
+        def beta_i(theta_i, n_i, h_i):
+            return 2*np.pi/wavelength*np.cos(theta_i)*n_i*h_i
 
-        layers = 2
-        EFI = np.zeros(layers+1)
-        EFI[0] = abs(Esubs)**2 / self._stacks_n[-1]
-        Ej = Esubs
+        def q_i(n_i):
+            return n_i # for now, but see (5) and (6) of Arnon/Baumeister 1980
+                       # for non-normal incidence
+
+        def _M():
+            myM = np.eye(2)
+            for n_i, h_i in izip(self._stacks_n[1:-1], self._stacks_d):
+                myM = myM * M_i(beta_i(0.0, n_i, h_i), q_i(n_i))
+            return myM
+
+        def E0p2(myM):  # (10) 
+            q0 = q_i(self._stacks_n[0])
+            qs = q_i(self._stacks_n[-1])
+            # possibly need 1j*m12 etc. here?
+            return 0.25*( abs(myM[0,0]+myM[1,1]*qs/q0)**2 
+                         +abs(myM[1,0]/q0 + myM[0,1] * qs)**2 )
+
+        def deltaM(beta_i, q_i): # (11)
+            return M_i(beta_i, -q_i)
+
+        layers = self._layers - 2  # remove sub- and superstrate
+        X = np.zeros(steps*layers)
+        E2 = np.zeros(steps*layers)
+        curX = 0.0
+        myM = _M()
+        myMz = myM
+        qs = q_i(self._stacks_n[-1])
+        # propagate through stack, where steps is the number of points
+        # calculated for each layer
         for ii in range(0, layers):
-            r = self._stacks_rho[-1-ii][1]
-            n = self._stacks_n[-2-ii]
-            d = self._stacks_d[-1-ii]
-            p = get_phi(n, d)
-            print n, r, d, p
-            Ej = (1+r)*np.exp(1j*p)/(1+r*np.exp(2j*p)) * Ej
-            EFI[ii+1] = abs(Ej)**2
-        print EFI
+            deltaL = self._stacks_d[ii] / steps
+            n_i = self._stacks_n[ii+1]
+            for jj in range(0, steps):
+                curX += deltaL
+                X[ii*steps + jj] = curX
+                myMz = deltaM(beta_i(0.0, n_i, deltaL), q_i(n_i)) * myMz # (13)
+                E2[ii*steps + jj] = abs(myMz[0,0])**2 + abs(qs/1j*myMz[0,1])**2 # (14)
+
+        print E0p2(myM)
+        # TESTING GIVES A ComplexWarning: investigate!!!
+        return (X, E2/E0p2(myM))
+
+
+    # def efi(self, wavelength):
+    #     R = self.reflectivity(wavelength)[0]
+    #     print "trying EFI calculation"
+    #     Esubs = 1.0 - R
+    #     print "Subs E^2: %.3f" % Esubs
+
+    #     def get_phi(n, d):
+    #         return 2*np.pi*n*d/wavelength
+
+    #     layers = len(self._stacks_d)
+    #     EFI = np.zeros(layers+1)
+    #     EFI[0] = Esubs / self._stacks_n[-1]
+    #     Ej = Esubs
+    #     # do I maybe need to add in the very first rho, i.e. from substrate to first layer?
+    #     for ii in range(0, layers):
+    #         r = self._stacks_rho[-1-ii][0]
+    #         n = self._stacks_n[-2-ii]
+    #         d = self._stacks_d[-1-ii]
+    #         p = get_phi(n, d)
+    #         print n, r, d, p
+    #         Ej = (1+r)*np.exp(1j*p)/(1+r*np.exp(2j*p)) * Ej
+    #         EFI[ii+1] = abs(Ej)**2
+    #     print EFI
 
 
     def reflectivity(self, wavelength):
