@@ -1,8 +1,14 @@
 #!/usr/bin/env python
+# This work is licensed under the Creative Commons Attribution-NonCommercial-
+# ShareAlike 4.0 International License. To view a copy of this license, visit
+# http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
+# Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 from contextlib import contextmanager
 
-# copied from http://stackoverflow.com/questions/42558/python-and-the-singleton-pattern
+# This Singleton implementation is taken from
+# http://stackoverflow.com/questions/42558/python-and-the-singleton-pattern
+# by Paul Manta, licensed as CC-BY-SA 3.0
 class Singleton:
     """
     A non-thread-safe helper class to ease implementing singletons.
