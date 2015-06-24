@@ -35,6 +35,16 @@ class PlotContainer(object):
         return plottypes
 
     @staticmethod
+    def colors():
+        return ['#348ABD',
+                '#7A68A6',
+                '#A60628',
+                '#467821',
+                '#CF4457',
+                '#188487',
+                '#E24A33']
+
+    @staticmethod
     def plot_refractive_index(plot, coating):
         "Electric Field Intensity"
 
@@ -62,11 +72,11 @@ class PlotContainer(object):
         plot.plot(X,Y)
         ax2 = plot.twinx()
         ax2.grid(True)
-        ax2.set_ylabel('Electric Field Intensity')
+        ax2.set_ylabel('Normalised Electric Field Intensity')
         if config.get('plot.yaxis.scale') == "log":
             ax2.set_yscale('log')
         Xefi,Yefi = stack.efi(wavelength)
-        ax2.plot(Xefi,Yefi,'r')
+        ax2.plot(Xefi,Yefi, color='#348ABD')
 
         for ii in range(0, xvalues/2):
             plot.axvspan(X[ii*2], X[ii*2+1], color=(0.52,0.61,0.73), alpha=get_alpha(Y[ii*2]))
