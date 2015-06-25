@@ -461,7 +461,11 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
       <item>
-       <widget class="MatplotlibWidget" name="pltMain" native="true"/>
+       <widget class="MatplotlibWidget" name="pltMain" native="true">
+        <property name="cursor">
+         <cursorShape>CrossCursor</cursorShape>
+        </property>
+       </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">

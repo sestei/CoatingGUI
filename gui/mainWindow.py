@@ -29,6 +29,9 @@ class MainWindow(QMainWindow):
         uic.loadUi('gui/ui_mainWindow.ui', self)
  
         self.plotHandle = self.pltMain.figure.add_subplot(111)
+        color = self.palette().color(QPalette.Background)
+        self.pltMain.figure.set_facecolor(color.getRgbF()[0:3])
+
         cid = self.pltMain.figure.canvas.mpl_connect('motion_notify_event', 
             lambda ev: self.mpl_on_mouse_move(ev))
 

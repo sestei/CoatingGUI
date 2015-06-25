@@ -44,10 +44,14 @@ class EFIPlot(baseplot.BasePlot):
         ax2 = self.handle.twinx()
         self.add_grid(ax2)
         ax2.set_ylabel('Normalised Electric Field Intensity')
-        if self.config.get('plot.EFI.yaxis.scale') == "log":
+        if self.config.get('plot.EFI.yaxis.scale') == 'log':
             ax2.set_yscale('log')
         Xefi,Yefi = stack.efi(wavelength)
         ax2.plot(Xefi,Yefi, color=self.colors[1])
+        if self.config.get('plot.EFI.yaxis.limits') == 'user':
+            ymin = self.config.get('plot.EFI.yaxis.min')
+            ymax = self.config.get('plot.EFI.yaxis.max')
+            ax2.set_ylim(ymin,ymax)
 
         # add in colored rectangles to visually indicate
         # layers and their index of refraction
