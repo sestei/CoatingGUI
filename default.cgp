@@ -1,6 +1,6 @@
 do_not_ask_on_quit: 1
 plot:
-  plottype: EFI
+  plottype: R_lambda
   EFI:
     analysis:
       lambda: 1064.0
@@ -9,6 +9,17 @@ plot:
       limits: auto
       min: 0
       max: 10
+      scale: lin
+  R_lambda:
+    xaxis:
+      steps: 200
+      limits: auto
+      min: 500
+      max: 1200
+    yaxis:
+      limits: auto
+      min: 0.0
+      max: 1.0
       scale: lin
 coating:
   lambda0: 1064.0

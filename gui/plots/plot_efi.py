@@ -19,6 +19,8 @@ class EFIPlot(baseplot.BasePlot):
         wavelength = self.config.get('plot.EFI.analysis.lambda')
         stack = coating.create_stack(wavelength)
         
+        handles = [] # holds the individual curves
+
         # create visual representation of stack
         # and refractive indices
         total_d = np.sum(stack.stacks_d)
@@ -38,7 +40,7 @@ class EFIPlot(baseplot.BasePlot):
             Y[ii*2] = Y[ii*2+1] = n
             current_d += d
             ii += 1
-        self.handle.plot(X,Y, color=self.colors[0])
+        handles += self.handle.plot(X,Y, color=self.colors[0])
 
         # now create EFI plot
         ax2 = self.handle.twinx()
@@ -47,7 +49,7 @@ class EFIPlot(baseplot.BasePlot):
         if self.config.get('plot.EFI.yaxis.scale') == 'log':
             ax2.set_yscale('log')
         Xefi,Yefi = stack.efi(wavelength)
-        ax2.plot(Xefi,Yefi, color=self.colors[1])
+        handles += ax2.plot(Xefi,Yefi, color=self.colors[1])
         if self.config.get('plot.EFI.yaxis.limits') == 'user':
             ymin = self.config.get('plot.EFI.yaxis.min')
             ymax = self.config.get('plot.EFI.yaxis.max')
@@ -71,6 +73,7 @@ class EFIPlot(baseplot.BasePlot):
         self.handle.set_ylim(0, np.max(stack.stacks_n)+1)
         self.handle.set_ylabel('Refractive Index')
         self.handle.set_xlabel('Position (nm)')
+        self.add_legend(handles, ['Refr. index', 'EFI'])
         self.add_copyright()
        
 

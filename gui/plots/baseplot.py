@@ -57,6 +57,7 @@ class BasePlot(object):
     
     def __init__(self, handle):
         self.handle = handle
+        self.handle.set_color_cycle(self.colors)
         self.config = Config.Instance()
 
     @abc.abstractmethod
@@ -69,8 +70,11 @@ class BasePlot(object):
         ax.grid(which='major', color='0.7', linestyle='-')
         ax.grid(which='minor', color='0.7', linestyle=':')
 
+    def add_legend(self, handles, entries):
+        self.handle.legend(handles, entries, fontsize=10, frameon=False)
+
     def add_copyright(self):
-        self.handle.set_title('CoatingGUI v0.1', loc='right', size=8)
+        self.handle.set_title('CoatingGUI v0.2', loc='right', size=8)
 
 
 
