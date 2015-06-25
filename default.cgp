@@ -1,22 +1,20 @@
 do_not_ask_on_quit: 1
 plot:
-  plottype: 3 
-  xaxis:
-    limits: "auto"
-    min: 800
-    max: 1200
-    steps: 300
-    scale: "lin"
-  yaxis:
-    limits: "auto"
-    min: 0.0
-    max: 1.0
-    scale: "lin"
+  plottype: EFI
+  EFI:
+    analysis:
+      lambda: 1064.0
+      steps: 30
+    yaxis:
+      limits: auto
+      min: 0
+      max: 10
+      scale: lin
 coating:
-  lambda0: 1064
+  lambda0: 1064.0
   AOI: 45.0
-  superstrate: "Air"
-  substrate: "Corning 7980"
+  superstrate: Air
+  substrate: Corning 7980
   layers:
   - [2.1, 127]
   - [1.46, 182]

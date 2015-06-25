@@ -58,3 +58,6 @@ def block_signals(obj):
         yield obj
     finally:
         obj.blockSignals(state)
+
+def to_float(string):
+    return '{0:g}'.format(string)
