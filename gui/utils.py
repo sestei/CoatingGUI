@@ -6,6 +6,9 @@
 
 from contextlib import contextmanager
 
+version_number = {'major': 0, 'minor': 2}
+version_string = 'CoatingGUI v{major}.{minor}'.format(**version_number)
+
 # This Singleton implementation is taken from
 # http://stackoverflow.com/questions/42558/python-and-the-singleton-pattern
 # by Paul Manta, licensed as CC-BY-SA 3.0
@@ -58,3 +61,7 @@ def block_signals(obj):
         yield obj
     finally:
         obj.blockSignals(state)
+
+
+def to_float(string):
+    return '{0:g}'.format(string)

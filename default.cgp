@@ -1,72 +1,53 @@
+version_number:
+  major: 0
+  minor: 2
 do_not_ask_on_quit: 1
 plot:
-  plottype: 3 
-  xaxis:
-    limits: "auto"
-    min: 800
-    max: 1200
-    steps: 300
-    scale: "lin"
-  yaxis:
-    limits: "auto"
-    min: 0.0
-    max: 1.0
-    scale: "lin"
+  plottype: R_lambda
+  EFI:
+    analysis:
+      lambda: 1064.0
+      steps: 30
+    yaxis:
+      limits: auto
+      min: 0
+      max: 10
+      scale: lin
+  R_lambda:
+    xaxis:
+      steps: 200
+      limits: auto
+      min: 500
+      max: 1200
+    yaxis:
+      limits: auto
+      min: 0.0
+      max: 1.0
+      scale: lin
+  R_angle:
+    xaxis:
+      steps: 200
+      limits: auto
+      min: 0
+      max: 60
+    yaxis:
+      limits: auto
+      min: 0.0
+      max: 1.0
+      scale: lin
+  phase:
+    xaxis:
+      steps: 200
+      limits: auto
+      min: 500
+      max: 1200
+    yaxis:
+      limits: auto
+      min: -180.0
+      max: 180.0
 coating:
-  lambda0: 1064
+  lambda0: 1064.0
   AOI: 45.0
-  superstrate: "Air"
-  substrate: "Corning 7980"
-  layers:
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-materials:
-  Air:
-    B: [0.0, 0.0, 0.0]
-    C: [0.0, 0.0, 0.0]
-    notes: ''
-  Corning 7980:
-    B: [0.68374049400,0.42032361300,0.58502748000]
-    C: [0.00460352869,0.01339688560,64.49327320000]
-    notes: Corning datasheet
-  N-BK7:
-    B: [1.0396, 0.2318, 1.0105]
-    C: [0.0060, 0.0200, 103.5607]
-    notes: Thorlabs
-  Sapphire:
-    B: [1.4313,0.6505,5.3414]
-    C: [0.0053,0.0143,325.0178]
-    notes: Thorlabs, ordinary ray
-  Silicon:
-    B: [10.6684, 0.0030, 1.5413]
-    C: [0.3015,1.1348,1104.0]
-    notes: Thorlabs
-  MgF2:
-    B: [0.4876,0.3988,2.312]
-    C: [0.0054804, 0.0089519, 0.056614]
-    notes: Thorlabs, ordinary ray
-  Germanium:
-    B: [8.28743, 6.73276, 0.29259]
-    C: [0, 0.44105, 3870.1]
-    notes: Barnes and Piltch, JOSA, Vol. 69, Issue 1, pp. 178-180 (1979)
-  Suprasil:
-    B: [0.473115591,0.631038719,0.906404498]
-    C: [0.0129957170,0.00412809220,98.7685322]
-    notes: Heraeus datasheet
+  superstrate: Air
+  substrate: Corning 7980
+window_geometry: 01d9d0cb00010000000008ea000000ba00000d4e0000037b000008ef000000d600000d4900000376000000010000

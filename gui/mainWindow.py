@@ -4,18 +4,23 @@
 # http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+import re
+
+import pdb
+
 from os.path import basename, splitext
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 
-from coating import Coating
-from plottypes import plottypes
-from config import Config
-from utils import block_signals
-from materialDialog import MaterialDialog
 import materials
-import re
+import plothandler
+from coating import Coating
+#from plottypes import plottypes
+from config import Config
+from utils import block_signals, version_string
+from materialDialog import MaterialDialog
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -26,17 +31,28 @@ class MainWindow(QMainWindow):
         uic.loadUi('gui/ui_mainWindow.ui', self)
  
         self.plotHandle = self.pltMain.figure.add_subplot(111)
+        color = self.palette().color(QPalette.Background)
+        self.pltMain.figure.set_facecolor(color.getRgbF()[0:3])
+
         cid = self.pltMain.figure.canvas.mpl_connect('motion_notify_event', 
             lambda ev: self.mpl_on_mouse_move(ev))
 
         self.update_title('untitled')
         self.config.modified.connect(self.handle_modified)
 
+        self.empty_plotoptions_widget = self.gbPlotWidget.layout().itemAt(0).widget()
+        self.plots = plothandler.collect_plots()
+
         self.initialise_plotoptions()
         self.initialise_materials()
         self.initialise_stack()
 
-        self.stbStatus.showMessage('Coating GUI v1.0')
+        geometry = self.config.get('window_geometry')
+        if geometry:
+            geometry = QByteArray.fromHex(self.config.get('window_geometry'))
+            self.restoreGeometry(geometry)
+
+        self.stbStatus.showMessage(version_string)
 
     def update_title(self, filename=None, changed=False):
         if changed:
@@ -57,44 +73,12 @@ class MainWindow(QMainWindow):
     def initialise_plotoptions(self):
         with block_signals(self.cbPlotType) as cb:
             cb.clear()
-            for ii in range(0, len(plottypes)):
-                cb.insertItem(ii, plottypes[ii][0])
-            cb.setCurrentIndex(self.config.get('plot.plottype'))
+            for k,v in self.plots.iteritems():
+                cb.addItem(v['description'], k)
+            setplot = self.config.get('plot.plottype')
+            cb.setCurrentIndex(cb.findData(setplot))
+            self.update_plot_widget(setplot)
         
-        if self.config.get('plot.xaxis.limits') == 'auto':
-            self.rbXLimAuto.setChecked(True)
-            self.rbXLimUser.setChecked(False)
-        else:
-            self.rbXLimAuto.setChecked(False)
-            self.rbXLimUser.setChecked(True)
-        if self.config.get('plot.yaxis.limits') == 'auto':
-            self.rbYLimAuto.setChecked(True)
-            self.rbYLimUser.setChecked(False)
-        else:
-            self.rbYLimAuto.setChecked(False)
-            self.rbYLimUser.setChecked(True)
-        
-        if self.config.get('plot.xaxis.scale') == 'lin':
-            self.rbXScaleLin.setChecked(True)
-            self.rbXScaleLog.setChecked(False)
-        else:
-            self.rbXScaleLin.setChecked(False)
-            self.rbXScaleLog.setChecked(True)
-        if self.config.get('plot.yaxis.scale') == 'lin':
-            self.rbYScaleLin.setChecked(True)
-            self.rbYScaleLog.setChecked(False)
-        else:
-            self.rbYScaleLin.setChecked(False)
-            self.rbYScaleLog.setChecked(True)
-        
-        self.txtXLimMin.setText(str(self.config.get('plot.xaxis.min')))
-        self.txtXLimMax.setText(str(self.config.get('plot.xaxis.max')))
-        self.txtYLimMin.setText(str(self.config.get('plot.yaxis.min')))
-        self.txtYLimMax.setText(str(self.config.get('plot.yaxis.max')))
-
-        self.txtSteps.setText(str(self.config.get('plot.xaxis.steps')))
-
-
     def initialise_stack(self):
         with block_signals(self.cbSuperstrate) as cb:
             m = self.config.get('coating.superstrate')
@@ -181,14 +165,33 @@ class MainWindow(QMainWindow):
         except materials.MaterialNotDefined as e:
             QMessageBox.critical(self, 'Material Error', str(e))
             return
-        plotidx = self.cbPlotType.currentIndex()
-        
+        idx = self.cbPlotType.currentIndex()
+        plot = str(self.cbPlotType.itemData(idx).toString())
+
         self.pltMain.figure.clear()
         self.plotHandle = self.pltMain.figure.add_subplot(111)
-        plottypes[plotidx][1](self.plotHandle, coating)
+        klass = self.plots[plot]['plotter']
+        plot = klass(self.plotHandle)
+        plot.plot(coating)
         self.pltMain.draw()
 
-    
+    @pyqtSlot(str)
+    def update_plot_widget(self, plot):
+        # if plot has it's own widget, then load it
+        # TODO: these widgets should have their own class, so that they can 
+        # load and save config stuff etc, and can easily interact with the
+        # plotting
+        klass = self.plots[plot]['options']
+        if klass:
+            widget = klass(self.gbPlotWidget)
+        else:
+            widget = self.empty_plotoptions_widget
+
+        old_widget = self.gbPlotWidget.layout().takeAt(0).widget()
+        old_widget.setParent(None)
+        self.gbPlotWidget.layout().addWidget(widget)
+        self.gbPlotWidget.update()
+        
     ### SLOTS - STACK TAB
 
     @pyqtSlot()
@@ -200,10 +203,6 @@ class MainWindow(QMainWindow):
     def on_btnAddLayer_clicked(self):
         row = self.tblStack.currentRow()+1
         self.tblStack.insertRow(row)
-
-    @pyqtSlot(int)
-    def on_cbPlotType_currentIndexChanged(self, idx):
-        self.config.set('plot.plottype', idx)
 
     @pyqtSlot(str)
     def on_cbSuperstrate_currentIndexChanged(self, text):
@@ -254,89 +253,15 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, 'Preparing for O.W.L.',
             'Sorry, the wizard is not available yet.')
 
-    ### SLOTS - PLOT OPTIONS TAB
+    ### SLOTS - PLOT TAB
 
-    @pyqtSlot(bool)
-    def on_rbXLimAuto_clicked(self, checked):
-        if checked:
-            self.config.set('plot.xaxis.limits', 'auto')
+    @pyqtSlot(int)
+    def on_cbPlotType_currentIndexChanged(self, plotidx):
+        plot = str(self.cbPlotType.itemData(plotidx).toString())
+        self.update_plot_widget(plot) 
+        self.config.set('plot.plottype', plot)
 
-    @pyqtSlot(bool)
-    def on_rbYLimAuto_clicked(self, checked):
-        if checked:
-            self.config.set('plot.yaxis.limits', 'auto')
 
-    @pyqtSlot(bool)
-    def on_rbXLimUser_clicked(self, checked):
-        if checked:
-            self.config.set('plot.xaxis.limits', 'user')
-
-    @pyqtSlot(bool)
-    def on_rbYLimUser_clicked(self, checked):
-        if checked:
-            self.config.set('plot.yaxis.limits', 'user')
-
-    @pyqtSlot()
-    def on_txtXLimMin_editingFinished(self):
-        text = self.txtXLimMin.text()
-        try:
-            self.config.set('plot.xaxis.min', float(text))
-        except ValueError:
-            self.float_conversion_error(text)
-
-    @pyqtSlot()
-    def on_txtXLimMax_editingFinished(self):
-        text = self.txtXLimMax.text()
-        try:
-            self.config.set('plot.xaxis.max', float(text))
-        except ValueError:
-            self.float_conversion_error(text)
-
-    @pyqtSlot()
-    def on_txtYLimMin_editingFinished(self):
-        text = self.txtYLimMin.text()
-        try:
-            self.config.set('plot.yaxis.min', float(text))
-        except ValueError:
-            self.float_conversion_error(text)
-
-    @pyqtSlot()
-    def on_txtYLimMax_editingFinished(self):
-        text = self.txtYLimMax.text()
-        try:
-            self.config.set('plot.yaxis.max', float(text))
-        except ValueError:
-            self.float_conversion_error(text)
-
-    @pyqtSlot()
-    def on_txtSteps_editingFinished(self):
-        text = self.txtSteps.text()
-        try:
-            self.config.set('plot.xaxis.steps', float(text))
-        except ValueError:
-            self.float_conversion_error(text)
-    
-    @pyqtSlot(bool)
-    def on_rbXScaleLin_clicked(self, checked):
-        if checked:
-            self.config.set('plot.xaxis.scale', 'lin')
-    
-    @pyqtSlot(bool)
-    def on_rbYScaleLin_clicked(self, checked):
-        if checked:
-            self.config.set('plot.yaxis.scale', 'lin')
-    
-    @pyqtSlot(bool)
-    def on_rbXScaleLog_clicked(self, checked):
-        if checked:
-            self.config.set('plot.xaxis.scale', 'log')
-    
-    @pyqtSlot(bool)
-    def on_rbYScaleLog_clicked(self, checked):
-        if checked:
-            self.config.set('plot.yaxis.scale', 'log')
-
-    
     ### SLOTS - MATERIALS TAB
 
     @pyqtSlot()
@@ -404,6 +329,8 @@ class MainWindow(QMainWindow):
         filename = str(QFileDialog.getSaveFileName(self, 'Save Coating Project',
                             self.filename, 'Coating Project Files (*.cgp)'))
         if filename:
+            geometry = self.saveGeometry().toHex().data()
+            self.config.set('window_geometry', geometry)
             self.config.save(filename)
             self.update_title(basename(filename))
 

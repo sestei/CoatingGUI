@@ -31,7 +31,10 @@ class PlotContainer(object):
         for kk in sorted(cls.__dict__.keys()):
             if kk.startswith('plot_'):
                 func = getattr(cls, kk)
-                plottypes.append((func.__doc__, func))
+                widget = None
+                if kk == 'plot_EFI':
+                    widget = 'ui_plotEFI.ui'
+                plottypes.append((func.__doc__, func, widget))
         return plottypes
 
     @staticmethod
@@ -45,7 +48,7 @@ class PlotContainer(object):
                 '#E24A33']
 
     @staticmethod
-    def plot_refractive_index(plot, coating):
+    def plot_EFI(plot, coating):
         "Electric Field Intensity"
 
         config = Config.Instance()
