@@ -6,6 +6,8 @@
 
 import re
 
+import pdb
+
 from os.path import basename, splitext
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -16,7 +18,7 @@ import plothandler
 from coating import Coating
 #from plottypes import plottypes
 from config import Config
-from utils import block_signals
+from utils import block_signals, version_string
 from materialDialog import MaterialDialog
 
 
@@ -45,7 +47,12 @@ class MainWindow(QMainWindow):
         self.initialise_materials()
         self.initialise_stack()
 
-        self.stbStatus.showMessage('Coating GUI v1.0')
+        geometry = self.config.get('window_geometry')
+        if geometry:
+            geometry = QByteArray.fromHex(self.config.get('window_geometry'))
+            self.restoreGeometry(geometry)
+
+        self.stbStatus.showMessage(version_string)
 
     def update_title(self, filename=None, changed=False):
         if changed:
@@ -66,15 +73,12 @@ class MainWindow(QMainWindow):
     def initialise_plotoptions(self):
         with block_signals(self.cbPlotType) as cb:
             cb.clear()
-            for plot in self.plots.iterkeys():
-                cb.addItem(plot)
+            for k,v in self.plots.iteritems():
+                cb.addItem(v['description'], k)
             setplot = self.config.get('plot.plottype')
-            cb.setCurrentIndex(cb.findText(setplot))
+            cb.setCurrentIndex(cb.findData(setplot))
             self.update_plot_widget(setplot)
         
-        ### return for now for widget plot options testing!!! <========================
-        return
-
     def initialise_stack(self):
         with block_signals(self.cbSuperstrate) as cb:
             m = self.config.get('coating.superstrate')
@@ -161,8 +165,9 @@ class MainWindow(QMainWindow):
         except materials.MaterialNotDefined as e:
             QMessageBox.critical(self, 'Material Error', str(e))
             return
-        plot = str(self.cbPlotType.currentText())
-        
+        idx = self.cbPlotType.currentIndex()
+        plot = str(self.cbPlotType.itemData(idx).toString())
+
         self.pltMain.figure.clear()
         self.plotHandle = self.pltMain.figure.add_subplot(111)
         klass = self.plots[plot]['plotter']
@@ -185,6 +190,7 @@ class MainWindow(QMainWindow):
         old_widget = self.gbPlotWidget.layout().takeAt(0).widget()
         old_widget.setParent(None)
         self.gbPlotWidget.layout().addWidget(widget)
+        self.gbPlotWidget.update()
         
     ### SLOTS - STACK TAB
 
@@ -197,12 +203,6 @@ class MainWindow(QMainWindow):
     def on_btnAddLayer_clicked(self):
         row = self.tblStack.currentRow()+1
         self.tblStack.insertRow(row)
-
-    @pyqtSlot(str)
-    def on_cbPlotType_currentIndexChanged(self, plot):
-        plot = str(plot)
-        self.update_plot_widget(plot) 
-        self.config.set('plot.plottype', plot)
 
     @pyqtSlot(str)
     def on_cbSuperstrate_currentIndexChanged(self, text):
@@ -253,7 +253,14 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, 'Preparing for O.W.L.',
             'Sorry, the wizard is not available yet.')
 
-    ### SLOTS - PLOT OPTIONS TAB
+    ### SLOTS - PLOT TAB
+
+    @pyqtSlot(int)
+    def on_cbPlotType_currentIndexChanged(self, plotidx):
+        plot = str(self.cbPlotType.itemData(plotidx).toString())
+        self.update_plot_widget(plot) 
+        self.config.set('plot.plottype', plot)
+
 
     ### SLOTS - MATERIALS TAB
 
@@ -322,6 +329,8 @@ class MainWindow(QMainWindow):
         filename = str(QFileDialog.getSaveFileName(self, 'Save Coating Project',
                             self.filename, 'Coating Project Files (*.cgp)'))
         if filename:
+            geometry = self.saveGeometry().toHex().data()
+            self.config.set('window_geometry', geometry)
             self.config.save(filename)
             self.update_title(basename(filename))
 

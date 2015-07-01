@@ -5,7 +5,7 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 import yaml
-from utils import Singleton
+from utils import Singleton, version_number
 from PyQt4.QtCore import QObject, pyqtSignal
 
 @Singleton
@@ -39,6 +39,7 @@ class Config(QObject):
     
     def save(self, filename):
         with file(filename, 'w') as fp:
+            self.set('version_number', version_number)
             yaml.dump(self._config, fp, default_flow_style=False)
             self._modified = False
 

@@ -1,3 +1,6 @@
+version_number:
+  major: 0
+  minor: 2
 do_not_ask_on_quit: 1
 plot:
   plottype: R_lambda
@@ -79,3 +82,4 @@ materials:
     B: [0.473115591,0.631038719,0.906404498]
     C: [0.0129957170,0.00412809220,98.7685322]
     notes: Heraeus datasheet
+window_geometry: 01d9d0cb00010000000008ea000000ba00000d4e0000037b000008ef000000d600000d4900000376000000010000

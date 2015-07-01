@@ -9,6 +9,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 from gui.config import Config
+from gui.utils import version_string
 
 class BasePlotOptionWidget(QWidget):
     def __init__(self, name, parent):
@@ -74,7 +75,7 @@ class BasePlot(object):
         self.handle.legend(handles, entries, fontsize=10, frameon=False)
 
     def add_copyright(self):
-        self.handle.set_title('CoatingGUI v0.2', loc='right', size=8)
+        self.handle.set_title(version_string, loc='right', size=8)
 
 
 
