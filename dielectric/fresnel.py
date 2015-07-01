@@ -11,8 +11,10 @@ def angle(alpha1, n1, n2):
     Returns the angle after refraction at a boundary with indices of refraction
     n1 and n2, angle of incidence alpha1
     """
-    return np.arcsin(n1/n2 * np.sin(alpha1))
-
+    arg = n1/n2 * np.sin(alpha1)
+    arg[abs(arg) > 1] = np.NaN
+    return np.arcsin(arg)
+    
 def rho(alpha1, n1, alpha2, n2):
     """
     Returns a pair of reflectivities for a boundary between materials of

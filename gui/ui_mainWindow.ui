@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1115</width>
-    <height>673</height>
+    <width>939</width>
+    <height>630</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabMain">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -329,7 +329,10 @@
        <attribute name="title">
         <string>Plot</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="0,1">
           <item>
@@ -345,7 +348,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QGroupBox" name="gbPlotWidget">
+         <widget class="QFrame" name="gbPlotWidget">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -355,13 +358,16 @@
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>220</height>
+            <height>16777215</height>
            </size>
           </property>
-          <property name="title">
-           <string>Plot Options</string>
-          </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinimumSize</enum>
+           </property>
+           <property name="margin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QLabel" name="label_3">
              <property name="enabled">
@@ -377,6 +383,9 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_7">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="title">
            <string>Curves</string>
           </property>
@@ -500,7 +509,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1115</width>
+     <width>939</width>
      <height>21</height>
     </rect>
    </property>
@@ -546,7 +555,7 @@
   </action>
   <action name="actionExport">
    <property name="text">
-    <string>Export...</string>
+    <string>Export PDF...</string>
    </property>
   </action>
  </widget>

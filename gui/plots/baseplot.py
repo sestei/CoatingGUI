@@ -22,7 +22,7 @@ class BasePlotOptionWidget(QWidget):
         QMessageBox.critical(self, 'Conversion Error',
             'The input "{0}" could not be converted to a floating point number.'.format(text))
     
-    def float_conversion_error(self, text):
+    def int_conversion_error(self, text):
         QMessageBox.critical(self, 'Conversion Error',
             'The input "{0}" could not be converted to an integer number.'.format(text))
     

@@ -24,6 +24,27 @@ plot:
       min: 0.0
       max: 1.0
       scale: lin
+  R_angle:
+    xaxis:
+      steps: 200
+      limits: auto
+      min: 0
+      max: 60
+    yaxis:
+      limits: auto
+      min: 0.0
+      max: 1.0
+      scale: lin
+  phase:
+    xaxis:
+      steps: 200
+      limits: auto
+      min: 500
+      max: 1200
+    yaxis:
+      limits: auto
+      min: -180.0
+      max: 180.0
 coating:
   lambda0: 1064.0
   AOI: 45.0

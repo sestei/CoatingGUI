@@ -40,7 +40,7 @@ class EFIPlot(baseplot.BasePlot):
             Y[ii*2] = Y[ii*2+1] = n
             current_d += d
             ii += 1
-        handles += self.handle.plot(X,Y, color=self.colors[0])
+        handles += self.handle.plot(X,Y, color=self.colors[3])
 
         # now create EFI plot
         ax2 = self.handle.twinx()
@@ -48,8 +48,9 @@ class EFIPlot(baseplot.BasePlot):
         ax2.set_ylabel('Normalised Electric Field Intensity')
         if self.config.get('plot.EFI.yaxis.scale') == 'log':
             ax2.set_yscale('log')
-        Xefi,Yefi = stack.efi(wavelength)
-        handles += ax2.plot(Xefi,Yefi, color=self.colors[1])
+        Xefi,Yefi = stack.efi(wavelength,
+                              self.config.get('plot.EFI.analysis.steps'))
+        handles += ax2.plot(Xefi,Yefi, color=self.colors[0])
         if self.config.get('plot.EFI.yaxis.limits') == 'user':
             ymin = self.config.get('plot.EFI.yaxis.min')
             ymax = self.config.get('plot.EFI.yaxis.max')
@@ -73,7 +74,7 @@ class EFIPlot(baseplot.BasePlot):
         self.handle.set_ylim(0, np.max(stack.stacks_n)+1)
         self.handle.set_ylabel('Refractive Index')
         self.handle.set_xlabel('Position (nm)')
-        self.add_legend(handles, ['Refr. index', 'EFI'])
+        self.add_legend(handles, ['Refr. index', 'EFI s-pol'])
         self.add_copyright()
        
 
@@ -85,16 +86,12 @@ class EFIPlotOptions(baseplot.BasePlotOptionWidget):
     def initialise_options(self):
         if self.config.get('plot.EFI.yaxis.limits') == 'auto':
             self.rbYLimAuto.setChecked(True)
-            self.rbYLimUser.setChecked(False)
         else:
-            self.rbYLimAuto.setChecked(False)
             self.rbYLimUser.setChecked(True)
         
         if self.config.get('plot.EFI.yaxis.scale') == 'lin':
             self.rbYScaleLin.setChecked(True)
-            self.rbYScaleLog.setChecked(False)
         else:
-            self.rbYScaleLin.setChecked(False)
             self.rbYScaleLog.setChecked(True)
         
         self.txtYLimMin.setText(to_float(self.config.get('plot.EFI.yaxis.min')))
