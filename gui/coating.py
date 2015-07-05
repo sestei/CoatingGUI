@@ -8,7 +8,7 @@ import numpy as np
 from materials import MaterialLibrary
 from dielectric.stacks import Stack
 
-np.seterr(all='raise')
+np.seterr(invalid='raise')
 
 class Coating(object):
     def __init__(self, superstrate, substrate, layers):

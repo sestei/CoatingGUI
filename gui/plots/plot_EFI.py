@@ -7,6 +7,7 @@
 import baseplot
 import numpy as np
 from PyQt4.QtCore import pyqtSlot
+from mixins import YAxisLimits, YAxisScale, XAxisSteps
 from gui.utils import to_float
 
 class EFIPlot(baseplot.BasePlot):
@@ -15,8 +16,11 @@ class EFIPlot(baseplot.BasePlot):
         """Converts refractive index n into alpha transparency value"""
         return min(np.log(n)/1.39, 1.0)
 
+    def __init__(self, handle):
+        super(EFIPlot, self).__init__('EFI', handle)
+    
     def plot(self, coating):
-        wavelength = self.config.get('plot.EFI.analysis.lambda')
+        wavelength = self.config.get('analysis.lambda')
         stack = coating.create_stack(wavelength)
         
         handles = [] # holds the individual curves
@@ -46,14 +50,14 @@ class EFIPlot(baseplot.BasePlot):
         ax2 = self.handle.twinx()
         self.add_grid(ax2)
         ax2.set_ylabel('Normalised Electric Field Intensity')
-        if self.config.get('plot.EFI.yaxis.scale') == 'log':
+        if self.config.get('yaxis.scale') == 'log':
             ax2.set_yscale('log')
         Xefi,Yefi = stack.efi(wavelength,
-                              self.config.get('plot.EFI.analysis.steps'))
+                              self.config.get('xaxis.steps'))
         handles += ax2.plot(Xefi,Yefi, color=self.colors[0])
-        if self.config.get('plot.EFI.yaxis.limits') == 'user':
-            ymin = self.config.get('plot.EFI.yaxis.min')
-            ymax = self.config.get('plot.EFI.yaxis.max')
+        if self.config.get('yaxis.limits') == 'user':
+            ymin = self.config.get('yaxis.min')
+            ymax = self.config.get('yaxis.max')
             ax2.set_ylim(ymin,ymax)
 
         # add in colored rectangles to visually indicate
@@ -79,64 +83,18 @@ class EFIPlot(baseplot.BasePlot):
        
 
 
-class EFIPlotOptions(baseplot.BasePlotOptionWidget):
+class EFIPlotOptions(YAxisLimits, YAxisScale, XAxisSteps, baseplot.BasePlotOptionWidget):
     def __init__(self, parent):
         super(EFIPlotOptions, self).__init__('EFI', parent)
 
     def initialise_options(self):
-        if self.config.get('plot.EFI.yaxis.limits') == 'auto':
-            self.rbYLimAuto.setChecked(True)
-        else:
-            self.rbYLimUser.setChecked(True)
-        
-        if self.config.get('plot.EFI.yaxis.scale') == 'lin':
-            self.rbYScaleLin.setChecked(True)
-        else:
-            self.rbYScaleLog.setChecked(True)
-        
-        self.txtYLimMin.setText(to_float(self.config.get('plot.EFI.yaxis.min')))
-        self.txtYLimMax.setText(to_float(self.config.get('plot.EFI.yaxis.max')))
-
-        self.txtSteps.setText(to_float(self.config.get('plot.EFI.analysis.steps')))
-        self.txtLambda.setText(to_float(self.config.get('plot.EFI.analysis.lambda')))
+        super(EFIPlotOptions, self).initialise_options()
+        self.txtLambda.setText(to_float(self.config.get('analysis.lambda')))
 
     # ==== SLOTS ====
-
-    @pyqtSlot(bool)
-    def on_rbYLimAuto_clicked(self, checked):
-        if checked:
-            self.config.set('plot.EFI.yaxis.limits', 'auto')
-
-    @pyqtSlot(bool)
-    def on_rbYLimUser_clicked(self, checked):
-        if checked:
-            self.config.set('plot.EFI.yaxis.limits', 'user')
-
-    @pyqtSlot()
-    def on_txtYLimMin_editingFinished(self):
-        self.float_set('plot.EFI.yaxis.min', self.txtYLimMin.text())
-
-    @pyqtSlot()
-    def on_txtYLimMax_editingFinished(self):
-        self.float_set('plot.EFI.yaxis.max', self.txtYLimMax.text())
-
-    @pyqtSlot()
-    def on_txtSteps_editingFinished(self):
-        self.int_set('plot.EFI.analysis.steps', self.txtSteps.text())
-    
     @pyqtSlot()
     def on_txtLambda_editingFinished(self):
-        self.float_set('plot.EFI.analysis.lambda', self.txtLambda.text())
-    
-    @pyqtSlot(bool)
-    def on_rbYScaleLin_clicked(self, checked):
-        if checked:
-            self.config.set('plot.EFI.yaxis.scale', 'lin')
-    
-    @pyqtSlot(bool)
-    def on_rbYScaleLog_clicked(self, checked):
-        if checked:
-            self.config.set('plot.EFI.yaxis.scale', 'log')
+        self.float_set('analysis.lambda', self.txtLambda.text())
 
 
 info = {

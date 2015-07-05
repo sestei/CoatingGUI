@@ -3,17 +3,18 @@ version_number:
   minor: 2
 do_not_ask_on_quit: 1
 plot:
-  plottype: R_lambda
+  plottype: EFI
   EFI:
     analysis:
       lambda: 1064.0
+    xaxis:
       steps: 30
     yaxis:
       limits: auto
       min: 0
       max: 10
       scale: lin
-  R_lambda:
+  r_lambda:
     xaxis:
       steps: 200
       limits: auto
@@ -24,7 +25,7 @@ plot:
       min: 0.0
       max: 1.0
       scale: lin
-  R_angle:
+  r_angle:
     xaxis:
       steps: 200
       limits: auto

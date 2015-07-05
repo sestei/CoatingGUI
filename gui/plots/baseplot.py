@@ -14,8 +14,9 @@ from gui.utils import version_string
 class BasePlotOptionWidget(QWidget):
     def __init__(self, name, parent):
         super(BasePlotOptionWidget, self).__init__(parent)
-        uic.loadUi('gui/plots/ui_plot'+name+'.ui', self)
-        self.config = Config.Instance()
+        ui_name = name if name.isupper() else name.title()
+        uic.loadUi('gui/plots/ui_plot'+ui_name+'.ui', self)
+        self.config = Config.Instance().view('plot.'+name)
         self.initialise_options()
 
     def float_conversion_error(self, text):
@@ -41,13 +42,12 @@ class BasePlotOptionWidget(QWidget):
     def initialise_options(self):
         pass
 
-    
 class BasePlot(object):
     """Base class for plots"""
 
     __metaclass__ = abc.ABCMeta
 
-    # from htp://www.huyng.com/posts/sane-color-scheme-for-matplotlib/
+    # from http://www.huyng.com/posts/sane-color-scheme-for-matplotlib/
     colors = ['#348ABD',
               '#E24A33',
               '#988ED5',
@@ -56,10 +56,10 @@ class BasePlot(object):
               '#8EBA42',
               '#FFB5B8']
     
-    def __init__(self, handle):
+    def __init__(self, name, handle):
         self.handle = handle
         self.handle.set_color_cycle(self.colors)
-        self.config = Config.Instance()
+        self.config = Config.Instance().view('plot.'+name)
 
     @abc.abstractmethod
     def plot(self, coating):
@@ -76,6 +76,3 @@ class BasePlot(object):
 
     def add_copyright(self):
         self.handle.set_title(version_string, loc='right', size=8)
-
-
-

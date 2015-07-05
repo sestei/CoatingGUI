@@ -32,6 +32,9 @@ class Config(QObject):
             self._modified = True
             self.modified.emit()
 
+    def view(self, path):
+        return ConfigView(path)
+
     def load(self, filename):
         with file(filename, 'r') as fp:
             self._config = yaml.load(fp)
@@ -78,3 +81,29 @@ def _recursive_remove(thedict, key):
         if key in thedict:
             del(thedict[key])
 
+
+class ConfigView(object):
+    """
+    class ConfigView
+
+    Represents a view onto a specific sub-tree of the
+    configuration.
+    """
+    def __init__(self, base):
+        if not base.endswith('.'):
+            base = base + '.'
+        self._base = base
+        self._config = Config.Instance()
+
+    def set(self, prop, value):
+        self._config.set(self._base+prop, value)
+
+    def get(self, prop):
+        return self._config.get(self._base+prop)
+
+    def remove(self, prop):
+        self._config.remove(self._base+prop)
+
+    @property
+    def parent(self):
+        return self._config
