@@ -4,7 +4,7 @@
 # http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-from utils import Singleton
+from utils import Singleton, DataFileWrapper
 from numpy import sqrt
 from config import Config
 from copy import copy
@@ -72,9 +72,11 @@ class MaterialLibrary(object):
 
 
 class Material(object):
-    def __init__(self, name=None, n=0.0, B=None, C=None, notes=''):
+    def __init__(self, name=None, n=0.0, B=None, C=None, n_file='', notes=''):
         self.name = name
         self.notes = notes
+        self.n_file = n_file
+        self.n_data = None
         self.B = B if B else [0.0, 0.0, 0.0]
         self.C = C if C else [0.0, 0.0, 0.0]
         if n > 0.0:
@@ -84,13 +86,19 @@ class Material(object):
             MaterialLibrary.Instance().register(self)
         
     def n(self, lambda0):
-        L = (lambda0 / 1000.0)**2; # Sellmeier equation works for um, not nm
-        return sqrt(1+L*self.B[0]/(L-self.C[0])+L*self.B[1]/(L-self.C[1])+L*self.B[2]/(L-self.C[2]))
+        if self.n_file:
+            if not self.n_data:
+                self.n_data = DataFileWrapper(self.n_file)
+            return self.n_data.value(lambda0)
+        else:
+            L = (lambda0 / 1000.0)**2; # Sellmeier equation works for um, not nm
+            return sqrt(1+L*self.B[0]/(L-self.C[0])+L*self.B[1]/(L-self.C[1])+L*self.B[2]/(L-self.C[2]))
 
     def save(self):
         return {
             'B': self.B,
             'C': self.C,
-            'notes': self.notes
+            'n_file': self.n_file,
+            'notes': self.notes,
         }
 

@@ -45,7 +45,10 @@ class MaterialDialog(QDialog):
             self.txtName.setText('New Material')
 
     def load_optical_properties(self, mat):
-        if mat['B'][1:] == [0.0, 0.0] and mat['C'] == [0.0, 0.0, 0.0]:
+        if mat['n_file']:
+            self.txtRefrIndexFile.setText(mat['n_file'])
+            self.rbRefrIndexFile.setChecked(True)
+        elif mat['B'][1:] == [0.0, 0.0] and mat['C'] == [0.0, 0.0, 0.0]:
             n = math.sqrt(mat['B'][0] + 1.0)
             self.txtRefrIndex.setText(str(n))
             self.rbRefrIndex.setChecked(True)
@@ -82,6 +85,7 @@ class MaterialDialog(QDialog):
     def save_optical_properties(self, mat):
         B = [0.0, 0.0, 0.0]
         C = [0.0, 0.0, 0.0]
+        mat['n_file'] = str(self.txtRefrIndexFile.text()).strip()
         if self.rbRefrIndex.isChecked():
             B[0] = get_float(self.txtRefrIndex.text(), 1.0)**2 - 1.0
         else:
@@ -97,3 +101,14 @@ class MaterialDialog(QDialog):
 
     def save_mechanical_properties(self, mat):
         return mat
+
+    # ==== SLOTS ====
+
+    @pyqtSlot()
+    def on_btnRefrIndexFile_clicked(self):
+        filename = QFileDialog.getOpenFileName(self, 'Select refractive index data file',
+                            '.', 'Data Files (*.asc *.csv *.dat *.txt)')
+        if filename:
+            cwd = QDir.current()
+            filename = cwd.relativeFilePath(filename)
+            self.txtRefrIndexFile.setText(str(filename))

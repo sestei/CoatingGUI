@@ -104,4 +104,13 @@ materials:
     B: [0.473115591,0.631038719,0.906404498]
     C: [0.0129957170,0.00412809220,98.7685322]
     notes: Heraeus datasheet
+  Ta2O5:
+    B: [0.0, 0.0, 0.0]
+    C: [0.0, 0.0, 0.0]
+    notes: L Anghinolfi et al, J Phys D 4 (2013) 455301
+    n_file: gui/data/n_ta5o2.dat
+  SiO2:
+    B: [1.1316, 0.0, 0.0]
+    C: [0.0, 0.0, 0.0]
+    notes: ''
 window_geometry: 01d9d0cb00010000000008ea000000ba00000d4e0000037b000008ef000000d600000d4900000376000000010000

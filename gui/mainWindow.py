@@ -206,11 +206,12 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str)
     def on_cbSuperstrate_currentIndexChanged(self, text):
-        self.config.set('coating.superstrate', text)
+        self.config.set('coating.superstrate', str(text))
 
     @pyqtSlot(str)
     def on_cbSubstrate_currentIndexChanged(self, text):
-        self.config.set('coating.substrate', text)
+        print "signalled"
+        self.config.set('coating.substrate', str(text))
     
     @pyqtSlot()
     def on_txtLambda0_editingFinished(self):
@@ -232,7 +233,7 @@ class MainWindow(QMainWindow):
     def on_tblStack_cellChanged(self, row, col):
         txt = self.tblStack.item(row, col).text()
         if col == 1:
-            # auto-convert L/x or l/x to lambda/x thicknesses
+            # auto-convert L/x or l/x or just /x to lambda/x thicknesses
             m = re.match('^[Ll]?/(\d+)$', txt)
             if m:
                 lox = int(m.groups()[0])
@@ -271,10 +272,10 @@ class MainWindow(QMainWindow):
         sup = str(self.cbSuperstrate.currentText())
         materials = [m for m in self.materials.list_materials()]
         self.lstMaterials.clear()
-        self.cbSuperstrate.clear()
-        self.cbSubstrate.clear()
         self.lstMaterials.addItems(materials)
         with block_signals(self.cbSubstrate) as cbsub, block_signals(self.cbSuperstrate) as cbsup:
+            self.cbSuperstrate.clear()
+            self.cbSubstrate.clear()
             cbsub.addItems(sorted(materials))
             cbsup.addItems(sorted(materials))
             # if user added a numeric refractive index value, copy that back in
