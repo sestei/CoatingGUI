@@ -203,6 +203,11 @@ class MainWindow(QMainWindow):
         row = self.tblStack.currentRow()+1
         self.tblStack.insertRow(row)
 
+    @pyqtSlot()
+    def on_btnClearStack_clicked(self):
+        self.config.set('coating.layers', [])
+        self.initialise_stack()
+
     @pyqtSlot(str)
     def on_cbSuperstrate_currentIndexChanged(self, text):
         self.config.set('coating.superstrate', str(text))

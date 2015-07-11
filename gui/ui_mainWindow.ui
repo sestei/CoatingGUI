@@ -167,6 +167,17 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="btnClearStack">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/Gnome-edit-delete.svg</normaloff>icons/Gnome-edit-delete.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
