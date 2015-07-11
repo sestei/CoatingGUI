@@ -15,11 +15,13 @@ from PyQt4 import uic
 
 import materials
 import plothandler
+import wizard
 from coating import Coating
 #from plottypes import plottypes
 from config import Config
 from utils import block_signals, version_string
 from materialDialog import MaterialDialog
+from wizard import Wizard
 
 
 class MainWindow(QMainWindow):
@@ -178,9 +180,6 @@ class MainWindow(QMainWindow):
     @pyqtSlot(str)
     def update_plot_widget(self, plot):
         # if plot has it's own widget, then load it
-        # TODO: these widgets should have their own class, so that they can 
-        # load and save config stuff etc, and can easily interact with the
-        # plotting
         klass = self.plots[plot]['options']
         if klass:
             widget = klass(self.gbPlotWidget)
@@ -210,7 +209,6 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str)
     def on_cbSubstrate_currentIndexChanged(self, text):
-        print "signalled"
         self.config.set('coating.substrate', str(text))
     
     @pyqtSlot()
@@ -251,8 +249,9 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_btnWizard_clicked(self):
-        QMessageBox.information(self, 'Preparing for O.W.L.',
-            'Sorry, the wizard is not available yet.')
+        wizard = Wizard(self)
+        if wizard.run():
+            self.initialise_stack()
 
     ### SLOTS - PLOT TAB
 

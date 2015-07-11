@@ -108,7 +108,7 @@ materials:
     B: [0.0, 0.0, 0.0]
     C: [0.0, 0.0, 0.0]
     notes: L Anghinolfi et al, J Phys D 4 (2013) 455301
-    n_file: gui/data/n_ta5o2.dat
+    n_file: gui/data/n_ta2o5.dat
   SiO2:
     B: [1.1316, 0.0, 0.0]
     C: [0.0, 0.0, 0.0]

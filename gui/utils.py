@@ -6,6 +6,7 @@
 
 from numpy import loadtxt, interp
 from contextlib import contextmanager
+from PyQt4.QtGui import QMessageBox
 
 version_number = {'major': 0, 'minor': 2}
 version_string = 'CoatingGUI v{major}.{minor}'.format(**version_number)
@@ -92,3 +93,12 @@ def block_signals(obj):
 
 def to_float(string):
     return '{0:g}'.format(string)
+
+def int_conversion_error(text, parent=None):
+    QMessageBox.critical(parent, 'Conversion Error',
+       'The input "{0}" could not be converted to an integer number.'.format(text))
+
+def float_conversion_error(text, parent=None):
+    QMessageBox.critical(parent, 'Conversion Error',
+        'The input "{0}" could not be converted to an integer number.'.format(text))
+    

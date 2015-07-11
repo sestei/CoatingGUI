@@ -294,6 +294,24 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>rbRefrIndex</tabstop>
+  <tabstop>txtRefrIndex</tabstop>
+  <tabstop>rbSellmeier</tabstop>
+  <tabstop>txtB1</tabstop>
+  <tabstop>txtB2</tabstop>
+  <tabstop>txtB3</tabstop>
+  <tabstop>txtC1</tabstop>
+  <tabstop>txtC2</tabstop>
+  <tabstop>txtC3</tabstop>
+  <tabstop>rbRefrIndexFile</tabstop>
+  <tabstop>txtRefrIndexFile</tabstop>
+  <tabstop>btnRefrIndexFile</tabstop>
+  <tabstop>txtNotes</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
