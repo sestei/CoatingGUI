@@ -351,3 +351,18 @@ class MainWindow(QMainWindow):
             self.initialise_plotoptions()
             self.initialise_materials()
             self.initialise_stack()
+
+    @pyqtSlot()
+    def on_actionAbout_triggered(self):
+        QMessageBox.about(self, version_string,
+            """
+(c) 2014-2015, Sebastian Steinlechner, sebastian.steinlechner@ligo.org
+
+Please visit GitHub to obtain the latest version of this software:
+https://www.github.com/sestei/dielectric
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-
+ShareAlike 4.0 International License. To view a copy of this license, visit
+http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
+Commons, PO Box 1866, Mountain View, CA 94042, USA.
+            """)
