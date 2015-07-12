@@ -24,8 +24,8 @@ class R_LambdaPlot(baseplot.BasePlot):
         
         #TODO: refactor this into another function, which can be used to plot transmission as well
         
+        lambda0 = self.config.parent.get('coating.lambda0')
         if self.config.get('xaxis.limits') == 'auto':
-            lambda0 = self.config.parent.get('coating.lambda0')
             xlim = [0.7 * lambda0, 1.3 * lambda0]
         else:
             xlim = [self.config.get('xaxis.min'),
@@ -64,6 +64,7 @@ class R_LambdaPlot(baseplot.BasePlot):
         self.handle.set_xlim(xlim)
         self.handle.set_ylim(ylim)
         
+        self.handle.axvline(lambda0, ls='--', color=self.colors[4], linewidth=1.5)
         if self.config.get('yaxis.scale') == 'log':
             self.handle.set_yscale('log')
             self.handle.yaxis.set_major_formatter(yFormatter)

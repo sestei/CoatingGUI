@@ -4,7 +4,7 @@
 # http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-from numpy import loadtxt, interp
+import numpy as np
 from contextlib import contextmanager
 from PyQt4.QtGui import QMessageBox
 
@@ -63,11 +63,11 @@ class DataFileWrapper(object):
         self.read_file()
 
     def value(self, x):
-        return interp(x, self._x, self._y)
+        return np.interp(x, self._x, self._y)
 
     def read_file(self):
         try:
-            x, y = loadtxt(self.filename, ndmin=2, unpack=True)
+            x, y = np.loadtxt(self.filename, ndmin=2, unpack=True)
         except IOError as e:
             raise UnreadableFile(str(e))
         except ValueError as e:
@@ -76,6 +76,33 @@ class DataFileWrapper(object):
 
         self._x = x
         self._y = y
+
+
+def export_data(filename, xdata, ydata, labels):
+    """
+    Exports data from xdata, ydata as ASCII file (tab-separated).
+
+    xdata and ydata should be arrays with (possibly) multiple data sets.
+    """
+    X = xdata[0]
+    unionised = False
+
+    # combine multiple x datasets into one, interpolating y data
+    if len(xdata) > 1:
+        unionised = True
+        for ii in range(1, len(xdata)):
+            X = np.union1d(X, xdata[ii])
+    Y = []
+    for ii in range(len(ydata)):
+        if unionised:
+            Y.append(np.interp(X, xdata[ii], ydata[ii]))
+        else:
+            Y.append(ydata[ii])
+
+    data = np.vstack((X, Y))
+
+    header = version_string + "\n\n" + "\t".join(labels)
+    np.savetxt(filename, data.T, delimiter="\t", fmt='%.5g', header=header)
 
 
 @contextmanager

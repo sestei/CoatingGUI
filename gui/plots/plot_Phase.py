@@ -17,8 +17,8 @@ class PhasePlot(baseplot.BasePlot):
     def plot(self, coating):
         #TODO: refactor this into another function, which can be used to plot transmission as well
         
+        lambda0 = self.config.parent.get('coating.lambda0')
         if self.config.get('xaxis.limits') == 'auto':
-            lambda0 = self.config.parent.get('coating.lambda0')
             xlim = [0.7 * lambda0, 1.3 * lambda0]
         else:
             xlim = [self.config.get('xaxis.min'),
@@ -41,6 +41,8 @@ class PhasePlot(baseplot.BasePlot):
                 self.config.get('yaxis.min'),
                 self.config.get('yaxis.max'))
 
+        self.handle.axvline(lambda0, ls='--', color=self.colors[4], linewidth=1.5)
+        
         self.handle.set_xlabel('Wavelength (nm)')
         self.handle.set_ylabel('Phase (deg)')
         self.add_legend(handles, ['s pol', 'p pol', 'delta'])

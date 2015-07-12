@@ -538,6 +538,7 @@
     <property name="title">
      <string>Plot</string>
     </property>
+    <addaction name="actionExportData"/>
     <addaction name="actionExport"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -579,6 +580,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>About...</string>
+   </property>
+  </action>
+  <action name="actionExportData">
+   <property name="text">
+    <string>Export data...</string>
    </property>
   </action>
  </widget>

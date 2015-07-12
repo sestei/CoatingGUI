@@ -67,6 +67,8 @@ class R_AnglePlot(baseplot.BasePlot):
         self.handle.set_xlim(xlim)
         self.handle.set_ylim(ylim)
         
+        self.handle.axvline(AOI, ls='--', color=self.colors[4], linewidth=1.5)
+         
         if self.config.get('yaxis.scale') == 'log':
             self.handle.set_yscale('log')
             self.handle.yaxis.set_major_formatter(yFormatter)

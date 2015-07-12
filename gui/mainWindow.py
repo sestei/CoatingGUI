@@ -19,7 +19,7 @@ import wizard
 from coating import Coating
 #from plottypes import plottypes
 from config import Config
-from utils import block_signals, version_string
+from utils import export_data, block_signals, version_string
 from materialDialog import MaterialDialog
 from wizard import Wizard
 
@@ -328,6 +328,36 @@ class MainWindow(QMainWindow):
                             splitext(self.filename)[0]+'.pdf', 'PDF (*.pdf)');
         if filename:
             self.pltMain.figure.savefig(str(filename))
+
+    @pyqtSlot()
+    def on_actionExportData_triggered(self):
+        xdata = []
+        ydata = []
+        labels = []
+        xlabel = ''
+        for ax in self.pltMain.figure.axes:
+            if not xlabel:
+                xlabel = ax.get_xlabel()
+            legend = ax.get_legend()
+            if legend:
+                for t in legend.get_texts():
+                    labels.append(t.get_text())
+            for line in ax.lines:
+                xdata.append(line.get_xdata())
+                ydata.append(line.get_ydata())
+        
+        labels.insert(0, xlabel)
+        # TODO: y labels, plot title?
+
+        if len(ydata) == 0:
+            QMessageBox.information(self, 'Empty plot not exported',
+                'Plot is empty, so there\'s no data to be exported.', QMessageBox.Ok)
+            return
+
+        filename = QFileDialog.getSaveFileName(self, 'Export Plot Data',
+                            splitext(self.filename)[0]+'.dat', 'ASCII Data (*.dat)');
+        if filename:
+            export_data(str(filename), xdata, ydata, labels)
 
     @pyqtSlot()
     def on_actionSave_triggered(self):
