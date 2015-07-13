@@ -16,6 +16,7 @@ class Coating(object):
         self.substrate = MaterialLibrary.Instance().get_material(substrate)
         self.layers = [Layer(m, t) for m, t in layers]
         self.thickness = sum([l.thickness for l in self.layers])
+        self.d = self.thickness * 1e-9
         
     def create_stack(self, lambda0, AOI=0.0):
         """
@@ -30,7 +31,47 @@ class Coating(object):
             stacks_d[ii] = self.layers[ii].thickness
         return Stack(stacks_n, stacks_d, AOI)
 
+    def yPara(self):
+        """Total parallel Young's modulus."""
+        return 1/self.d * sum([l.d * l.material.Y for l in self.layers])
+
+    def yPerp(self):
+        """Total perpendicular Young's modulus."""
+        return self.d / sum([l.d / l.material.Y for l in self.layers])
+
+    def phiPara(self):
+        """Total parallel loss angle."""
+        return 1 / (self.d * self.yPara()) * sum([l.material.Y * l.material.phi * l.d for l in self.layers])
+
+    def phiPerp(self):
+        """Total perpendicular loss angle."""
+        return self.yPerp() / self.d * sum([l.d * l.material.phi / l.material.Y for l in self.layers])
+
+    def sigmaPara(self):
+        """Total stack parallel Poisson's ratio."""
+        return np.mean([l.material.sigma for l in self.layers])
+
+    def sigmaPerp(self):
+        """Total perpendicular Poisson's ratio."""
+        return sum([l.material.sigma * l.material.Y * l.d for l in self.layers]) / sum([l.material.Y * l.d for l in self.layers])
+
+    def phi(self, beam_size):
+        """Effective loss angle."""
+        return (self.d / (np.sqrt(np.pi) * beam_size * self.yPerp()) *
+            (self.phiPerp() *
+             (self.substrate.Y / (1 - self.substrate.sigma ** 2) -
+              2 * self.sigmaPerp() ** 2 * self.substrate.Y * self.yPara() /
+              (self.yPerp() * (1 - self.substrate.sigma ** 2) * (1 - self.sigmaPara()))) +
+             self.yPara() * self.sigmaPerp() * (1 - 2 * self.substrate.sigma) /
+             ((1 - self.sigmaPara()) * (1 - self.substrate.sigma)) *
+             (self.phiPara() - self.phiPerp()) +
+             self.yPara() * self.yPerp() * (1 + self.substrate.sigma) *
+             (self.phiPara() * (1 - 2 * self.substrate.sigma) ** 2) /
+             (self.substrate.Y * (1 - self.sigmaPara() ** 2) * (1 - self.substrate.sigma))))
+
 class Layer(object):
     def __init__(self, material, thickness):
         self.material = MaterialLibrary.Instance().get_material(material)
         self.thickness = thickness
+        self.d = self.thickness * 1e-9
+

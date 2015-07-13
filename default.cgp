@@ -46,6 +46,15 @@ plot:
       limits: auto
       min: -180.0
       max: 180.0
+  brownian_noise:
+    xaxis:
+      steps: 10
+      limits: auto
+      min: 1
+      max: 10000
+    analysis:
+      beam_size: 100.0
+      temperature: 290
 coating:
   lambda0: 1064.0
   AOI: 45.0
@@ -79,6 +88,9 @@ materials:
   Corning 7980:
     B: [0.68374049400,0.42032361300,0.58502748000]
     C: [0.00460352869,0.01339688560,64.49327320000]
+    Y: 72.0e+9
+    sigma: 0.17
+    phi: 5.0e-09
     notes: Corning datasheet
   N-BK7:
     B: [1.0396, 0.2318, 1.0105]
@@ -107,10 +119,24 @@ materials:
   Ta2O5:
     B: [0.0, 0.0, 0.0]
     C: [0.0, 0.0, 0.0]
+    Y: 140e9
+    sigma: 0.23
+    phi: 3.8e-4
+    notes: L Anghinolfi et al, J Phys D 4 (2013) 455301
+    n_file: gui/data/n_ta2o5.dat
+  'Ti:Ta2O5':
+    B: [0.0, 0.0, 0.0]
+    C: [0.0, 0.0, 0.0]
+    Y: 140.0e+9
+    sigma: 0.23
+    phi: 3.0e-4
     notes: L Anghinolfi et al, J Phys D 4 (2013) 455301
     n_file: gui/data/n_ta2o5.dat
   SiO2:
     B: [1.1316, 0.0, 0.0]
     C: [0.0, 0.0, 0.0]
+    Y: 72.0e+9
+    sigma: 0.17
+    phi: 4.0e-5
     notes: ''
 window_geometry: 01d9d0cb00010000000008ea000000ba00000d4e0000037b000008ef000000d600000d4900000376000000010000

@@ -5,7 +5,7 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 from utils import Singleton, DataFileWrapper
-from numpy import sqrt
+from numpy import sqrt, inf
 from config import Config
 from copy import copy
 
@@ -72,7 +72,7 @@ class MaterialLibrary(object):
 
 
 class Material(object):
-    def __init__(self, name=None, n=0.0, B=None, C=None, n_file='', notes=''):
+    def __init__(self, name=None, n=0.0, B=None, C=None, n_file='', Y=inf, sigma=0.0, phi=0.0, notes=''):
         self.name = name
         self.notes = notes
         self.n_file = n_file
@@ -82,6 +82,10 @@ class Material(object):
         if n > 0.0:
             self.B[0] = n**2 - 1.0
             
+        self.Y = float(Y)
+        self.sigma = float(sigma)
+        self.phi = float(phi)
+
         if self.name:
             MaterialLibrary.Instance().register(self)
         
@@ -99,6 +103,9 @@ class Material(object):
             'B': self.B,
             'C': self.C,
             'n_file': self.n_file,
+            'Y': self.Y,
+            'sigma': self.sigma,
+            'phi': self.phi,
             'notes': self.notes,
         }
 

@@ -91,6 +91,9 @@
               <layout class="QGridLayout" name="gridLayout">
                <item row="0" column="1">
                 <widget class="QLineEdit" name="txtB1">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="maximumSize">
                   <size>
                    <width>50</width>
@@ -107,6 +110,9 @@
                </item>
                <item row="1" column="1">
                 <widget class="QLineEdit" name="txtC1">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="maximumSize">
                   <size>
                    <width>50</width>
@@ -137,6 +143,9 @@
                </item>
                <item row="0" column="3">
                 <widget class="QLineEdit" name="txtB2">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="maximumSize">
                   <size>
                    <width>50</width>
@@ -167,6 +176,9 @@
                </item>
                <item row="0" column="5">
                 <widget class="QLineEdit" name="txtB3">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="maximumSize">
                   <size>
                    <width>50</width>
@@ -197,6 +209,9 @@
                </item>
                <item row="1" column="3">
                 <widget class="QLineEdit" name="txtC2">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="maximumSize">
                   <size>
                    <width>50</width>
@@ -213,6 +228,9 @@
                </item>
                <item row="1" column="5">
                 <widget class="QLineEdit" name="txtC3">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="maximumSize">
                   <size>
                    <width>50</width>
@@ -266,6 +284,88 @@
          <attribute name="title">
           <string>Mechanical Properties</string>
          </attribute>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>GPa</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="3">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>&lt;html&gt;Young's modulus &lt;i&gt;Y&lt;/i&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>&lt;html&gt;Loss angle &lt;i&gt;&amp;phi;&lt;/i&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>&lt;html&gt;Poisson's ratio &lt;i&gt;&amp;sigma;&lt;/i&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="txtY">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QLineEdit" name="txtPhi">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLineEdit" name="txtSigma">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>
@@ -277,7 +377,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QPlainTextEdit" name="txtNotes"/>
+       <widget class="QPlainTextEdit" name="txtNotes">
+        <property name="tabChangesFocus">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -309,6 +413,9 @@
   <tabstop>rbRefrIndexFile</tabstop>
   <tabstop>txtRefrIndexFile</tabstop>
   <tabstop>btnRefrIndexFile</tabstop>
+  <tabstop>txtY</tabstop>
+  <tabstop>txtSigma</tabstop>
+  <tabstop>txtPhi</tabstop>
   <tabstop>txtNotes</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
@@ -375,6 +482,118 @@
     <hint type="destinationlabel">
      <x>201</x>
      <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbRefrIndex</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtRefrIndex</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>125</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSellmeier</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtB1</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>89</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>87</x>
+     <y>171</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSellmeier</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtB2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>114</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>177</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSellmeier</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtB3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>140</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>180</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSellmeier</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtC1</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>76</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSellmeier</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtC2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>152</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>203</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSellmeier</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtC3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>129</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>223</x>
+     <y>203</y>
     </hint>
    </hints>
   </connection>

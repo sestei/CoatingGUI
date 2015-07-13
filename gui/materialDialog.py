@@ -9,6 +9,7 @@ from PyQt4.QtGui import *
 from PyQt4 import uic
 from config import Config
 from materials import MaterialLibrary
+from utils import to_float
 import math
 
 class UnnamedMaterialException(Exception):
@@ -64,7 +65,9 @@ class MaterialDialog(QDialog):
             self.rbSellmeier.setChecked(True)
 
     def load_mechanical_properties(self, mat):
-        pass
+        self.txtY.setText(to_float(mat['Y']/1e9))
+        self.txtSigma.setText(to_float(mat['sigma']))
+        self.txtPhi.setText(to_float(mat['phi']))
 
     def save_material(self):
         material = str(self.txtName.text()).strip()
@@ -100,6 +103,9 @@ class MaterialDialog(QDialog):
         return mat
 
     def save_mechanical_properties(self, mat):
+        mat['Y'] = get_float(self.txtY.text())*1e9
+        mat['sigma'] = get_float(self.txtSigma.text())
+        mat['phi'] = get_float(self.txtPhi.text())
         return mat
 
     # ==== SLOTS ====

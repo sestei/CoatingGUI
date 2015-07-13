@@ -118,9 +118,10 @@ def block_signals(obj):
         obj.blockSignals(state)
 
 
-def to_float(string):
-    return '{0:g}'.format(string)
-
+def to_float(number):
+    """Converts a floating point number to a sensible string representation"""
+    return '{0:g}'.format(number)
+    
 def int_conversion_error(text, parent=None):
     QMessageBox.critical(parent, 'Conversion Error',
        'The input "{0}" could not be converted to an integer number.'.format(text))
