@@ -1,0 +1,3 @@
+[submodule "thermal-noise"]
+	path = thermal-noise
+	url = git@github.com:SeanDS/dielectric-thermal-noise.git
