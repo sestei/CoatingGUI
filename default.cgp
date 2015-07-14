@@ -1,9 +1,160 @@
-version_number:
-  major: 0
-  minor: 2
+coating:
+  AOI: 0.0
+  lambda0: 1064.0
+  layers:
+  - - SiO2
+    - 364.4
+  - - Ta2O5
+    - 127.5
+  - - SiO2
+    - 182.2
+  - - Ta2O5
+    - 127.5
+  - - SiO2
+    - 182.2
+  - - Ta2O5
+    - 127.5
+  - - SiO2
+    - 182.2
+  - - Ta2O5
+    - 127.5
+  - - SiO2
+    - 182.2
+  - - Ta2O5
+    - 127.5
+  - - SiO2
+    - 182.2
+  - - Ta2O5
+    - 127.5
+  substrate: Corning 7980
+  superstrate: Air
 do_not_ask_on_quit: 1
+materials:
+  Air:
+    B:
+    - 0.0
+    - 0.0
+    - 0.0
+    C:
+    - 0.0
+    - 0.0
+    - 0.0
+    notes: ''
+  Corning 7980:
+    B:
+    - 0.683740494
+    - 0.420323613
+    - 0.58502748
+    C:
+    - 0.00460352869
+    - 0.0133968856
+    - 64.4932732
+    Y: 72000000000.0
+    notes: Corning datasheet
+    phi: 5.0e-09
+    sigma: 0.17
+  Germanium:
+    B:
+    - 8.28743
+    - 6.73276
+    - 0.29259
+    C:
+    - 0
+    - 0.44105
+    - 3870.1
+    notes: Barnes and Piltch, JOSA, Vol. 69, Issue 1, pp. 178-180 (1979)
+  MgF2:
+    B:
+    - 0.4876
+    - 0.3988
+    - 2.312
+    C:
+    - 0.0054804
+    - 0.0089519
+    - 0.056614
+    notes: Thorlabs, ordinary ray
+  N-BK7:
+    B:
+    - 1.0396
+    - 0.2318
+    - 1.0105
+    C:
+    - 0.006
+    - 0.02
+    - 103.5607
+    notes: Thorlabs
+  Sapphire:
+    B:
+    - 1.4313
+    - 0.6505
+    - 5.3414
+    C:
+    - 0.0053
+    - 0.0143
+    - 325.0178
+    notes: Thorlabs, ordinary ray
+  SiO2:
+    B:
+    - 1.1316
+    - 0.0
+    - 0.0
+    C:
+    - 0.0
+    - 0.0
+    - 0.0
+    Y: 72000000000.0
+    notes: ''
+    phi: 4.0e-05
+    sigma: 0.17
+  Silicon:
+    B:
+    - 10.6684
+    - 0.003
+    - 1.5413
+    C:
+    - 0.3015
+    - 1.1348
+    - 1104.0
+    notes: Thorlabs
+  Suprasil:
+    B:
+    - 0.473115591
+    - 0.631038719
+    - 0.906404498
+    C:
+    - 0.012995717
+    - 0.0041280922
+    - 98.7685322
+    notes: Heraeus datasheet
+  Ta2O5:
+    B:
+    - 0.0
+    - 0.0
+    - 0.0
+    C:
+    - 0.0
+    - 0.0
+    - 0.0
+    Y: 140e9
+    n_file: gui/data/n_ta2o5.dat
+    notes: L Anghinolfi et al, J Phys D 4 (2013) 455301
+    phi: 0.00038
+    sigma: 0.23
+  Ti:Ta2O5:
+    B:
+    - 0.0
+    - 0.0
+    - 0.0
+    C:
+    - 0.0
+    - 0.0
+    - 0.0
+    Y: 140000000000.0
+    n_file: gui/data/n_ta2o5.dat
+    notes: L Anghinolfi et al, J Phys D 4 (2013) 455301
+    phi: 0.0003
+    sigma: 0.23
 plot:
-  plottype: EFI
   EFI:
     analysis:
       lambda: 1064.0
@@ -11,132 +162,52 @@ plot:
       steps: 30
     yaxis:
       limits: auto
-      min: 0
       max: 10
-      scale: lin
-  r_lambda:
-    xaxis:
-      steps: 200
-      limits: auto
-      min: 500
-      max: 1200
-    yaxis:
-      limits: auto
-      min: 0.0
-      max: 1.0
-      scale: lin
-  r_angle:
-    xaxis:
-      steps: 200
-      limits: auto
       min: 0
-      max: 60
-    yaxis:
-      limits: auto
-      min: 0.0
-      max: 1.0
       scale: lin
-  phase:
-    xaxis:
-      steps: 200
-      limits: auto
-      min: 500
-      max: 1200
-    yaxis:
-      limits: auto
-      min: -180.0
-      max: 180.0
   brownian_noise:
-    xaxis:
-      steps: 10
-      limits: auto
-      min: 1
-      max: 10000
     analysis:
       beam_size: 100.0
       temperature: 290
-coating:
-  lambda0: 1064.0
-  AOI: 45.0
-  superstrate: Air
-  substrate: Corning 7980
-  layers:
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-  - [1.46, 182]
-  - [2.1, 127]
-materials:
-  Air:
-    B: [0.0, 0.0, 0.0]
-    C: [0.0, 0.0, 0.0]
-    notes: ''
-  Corning 7980:
-    B: [0.68374049400,0.42032361300,0.58502748000]
-    C: [0.00460352869,0.01339688560,64.49327320000]
-    Y: 72.0e+9
-    sigma: 0.17
-    phi: 5.0e-09
-    notes: Corning datasheet
-  N-BK7:
-    B: [1.0396, 0.2318, 1.0105]
-    C: [0.0060, 0.0200, 103.5607]
-    notes: Thorlabs
-  Sapphire:
-    B: [1.4313,0.6505,5.3414]
-    C: [0.0053,0.0143,325.0178]
-    notes: Thorlabs, ordinary ray
-  Silicon:
-    B: [10.6684, 0.0030, 1.5413]
-    C: [0.3015,1.1348,1104.0]
-    notes: Thorlabs
-  MgF2:
-    B: [0.4876,0.3988,2.312]
-    C: [0.0054804, 0.0089519, 0.056614]
-    notes: Thorlabs, ordinary ray
-  Germanium:
-    B: [8.28743, 6.73276, 0.29259]
-    C: [0, 0.44105, 3870.1]
-    notes: Barnes and Piltch, JOSA, Vol. 69, Issue 1, pp. 178-180 (1979)
-  Suprasil:
-    B: [0.473115591,0.631038719,0.906404498]
-    C: [0.0129957170,0.00412809220,98.7685322]
-    notes: Heraeus datasheet
-  Ta2O5:
-    B: [0.0, 0.0, 0.0]
-    C: [0.0, 0.0, 0.0]
-    Y: 140e9
-    sigma: 0.23
-    phi: 3.8e-4
-    notes: L Anghinolfi et al, J Phys D 4 (2013) 455301
-    n_file: gui/data/n_ta2o5.dat
-  'Ti:Ta2O5':
-    B: [0.0, 0.0, 0.0]
-    C: [0.0, 0.0, 0.0]
-    Y: 140.0e+9
-    sigma: 0.23
-    phi: 3.0e-4
-    notes: L Anghinolfi et al, J Phys D 4 (2013) 455301
-    n_file: gui/data/n_ta2o5.dat
-  SiO2:
-    B: [1.1316, 0.0, 0.0]
-    C: [0.0, 0.0, 0.0]
-    Y: 72.0e+9
-    sigma: 0.17
-    phi: 4.0e-5
-    notes: ''
-window_geometry: 01d9d0cb00010000000008ea000000ba00000d4e0000037b000008ef000000d600000d4900000376000000010000
+    xaxis:
+      limits: auto
+      max: 10000
+      min: 1
+      steps: 10
+  phase:
+    xaxis:
+      limits: auto
+      max: 1200
+      min: 500
+      steps: 200
+    yaxis:
+      limits: auto
+      max: 180.0
+      min: -180.0
+  plottype: r_lambda
+  r_angle:
+    xaxis:
+      limits: auto
+      max: 60
+      min: 0
+      steps: 200
+    yaxis:
+      limits: auto
+      max: 1.0
+      min: 0.0
+      scale: lin
+  r_lambda:
+    xaxis:
+      limits: auto
+      max: 1200
+      min: 500
+      steps: 200
+    yaxis:
+      limits: auto
+      max: 1.0
+      min: 0.0
+      scale: lin
+version_number:
+  major: 0
+  minor: 2
+window_geometry: 01d9d0cb00010000000000f10000003e00000555000002ff000000f60000005a00000550000002fa000000000000
