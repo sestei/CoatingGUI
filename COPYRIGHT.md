@@ -1,17 +1,40 @@
-CoatingGUI license information
-==============================
+# CoatingGUI Copyright Notice
+
+The following people have contributed to this software:
+
+- Sebastian Steinlechner
+- Sean Leavey
 
 This work is licensed under the Creative Commons Attribution-NonCommercial-
 ShareAlike 4.0 International License. To view a copy of this license, visit
 http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
 Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+## Credits
 
-This software uses matplotlibwidget.py which is licensed as follows:
+Most of the dielectric field calculations are based upon [Bo Sernelius' lecture on electrodynamics](http://www.ifm.liu.se/courses/TFYY67/), especially lecture 13.
+
+The EFI calculation is an (incomplete) implementation of the formulas given by Arnon/Baumeister, 1980.
+
+Thermal noise calculations where taken from [Sean Leavey's implementation](https://github.com/SeanDS/dielectric-thermal-noise), he in turn credits the following sources:
+
+- http://dx.doi.org/10.1088/0264-9381/19/5/305
+- http://proceedings.spiedigitallibrary.org/proceeding.aspx?articleid=851432 (for the correction to perpendicular component of the loss angle from Harry et al. 2002)
+- http://dx.doi.org/10.1088/0264-9381/24/2/008
+- GWINC (for the simplified version of the parallel component of Poisson's ratio)
+- Personal discussion with colleagues
+ 
+
+## Third-party licenses
+
+This software relies upon and incorporates several great pieces of software. Their respective licenses are reproduced here.
+
+
+### matplotlibwidget.py
 
 The MIT License (MIT)
 
-Copyright © 2009 Pierre Raybaut
+Copyright (c) 2009 Pierre Raybaut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +55,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
-This software uses a Singleton implementation by Paul Manta, licensed as follows:
+### Singleton implementation by Paul Manta
 
 This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
 Unported License. To view a copy of this license, visit
@@ -40,7 +63,7 @@ http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to Creative
 Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
-This software uses icons from the GNOME Desktop Tango icon set, licensed as follows:
+### GNOME Desktop Tango icon set
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

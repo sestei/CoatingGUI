@@ -5,6 +5,7 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 import yaml
+import copy
 from utils import Singleton, version_number
 from PyQt4.QtCore import QObject, pyqtSignal
 
@@ -15,6 +16,7 @@ class Config(QObject):
     def __init__(self):
         QObject.__init__(self)
         self._config = {}
+        self._default = {}
         self._modified = False
     
     def set(self, prop, value):
@@ -37,9 +39,16 @@ class Config(QObject):
 
     def load(self, filename):
         with file(filename, 'r') as fp:
-            self._config = yaml.load(fp)
+            self._config = copy.deepcopy(self._default)
+            self._config.update(yaml.load(fp))
             self._modified = False
     
+    def load_default(self, filename):
+        with file(filename, 'r') as fp:
+            self._default = yaml.load(fp)
+            self._config = copy.deepcopy(self._default)
+            self._modified = False
+
     def save(self, filename):
         with file(filename, 'w') as fp:
             self.set('version_number', version_number)

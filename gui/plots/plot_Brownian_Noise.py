@@ -10,7 +10,7 @@ from PyQt4.QtCore import pyqtSlot
 import matplotlib as mpl
 
 from mixins import XAxisLimits, XAxisSteps
-from gui.utils import to_float
+from gui.utils import to_float, float_set_from_lineedit
 
 
 class BrownianNoisePlot(baseplot.BasePlot):
@@ -65,11 +65,11 @@ class BrownianNoiseOptions(XAxisSteps, XAxisLimits, baseplot.BasePlotOptionWidge
     # ==== SLOTS ====
     @pyqtSlot()
     def on_txtTemperature_editingFinished(self):
-        self.float_set('analysis.temperature', self.txtTemperature.text())
-
+        float_set_from_lineedit(self.txtTemperature, self.config, 'analysis.temperature', self)
+        
     @pyqtSlot()
     def on_txtBeamSize_editingFinished(self):
-        self.float_set('analysis.beam_size', self.txtBeamSize.text())
+        float_set_from_lineedit(self.txtBeamSize, self.config, 'analysis.beam_size', self)
     
 
 info = {

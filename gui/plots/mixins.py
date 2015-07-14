@@ -5,7 +5,7 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 from PyQt4.QtCore import pyqtSlot
-from gui.utils import to_float
+from gui.utils import to_float, float_set_from_lineedit, int_set_from_lineedit
 
 
 class XAxisLimits(object):
@@ -32,11 +32,11 @@ class XAxisLimits(object):
 
     @pyqtSlot()
     def on_txtXLimMin_editingFinished(self):
-        self.float_set('xaxis.min', self.txtXLimMin.text())
+        float_set_from_lineedit(self.txtXLimMin, self.config, 'xaxis.min', self)
 
     @pyqtSlot()
     def on_txtXLimMax_editingFinished(self):
-        self.float_set('xaxis.max', self.txtXLimMax.text())
+        float_set_from_lineedit(self.txtXLimMax, self.config, 'xaxis.max', self)
 
 
 class YAxisLimits(object):
@@ -63,12 +63,11 @@ class YAxisLimits(object):
 
     @pyqtSlot()
     def on_txtYLimMin_editingFinished(self):
-        self.float_set('yaxis.min', self.txtYLimMin.text())
+        float_set_from_lineedit(self.txtYLimMin, self.config, 'yaxis.min', self)
 
     @pyqtSlot()
     def on_txtYLimMax_editingFinished(self):
-        self.float_set('yaxis.max', self.txtYLimMax.text())
-
+        float_set_from_lineedit(self.txtYLimMax, self.config, 'yaxis.max', self)
 
 class YAxisScale(object):
     def initialise_options(self):
@@ -117,5 +116,5 @@ class XAxisSteps(object):
 
     @pyqtSlot()
     def on_txtXSteps_editingFinished(self):
-        self.int_set('xaxis.steps', self.txtXSteps.text())
+        float_set_from_lineedit(self.txtXSteps, self.config, 'xaxis.steps', self)
 

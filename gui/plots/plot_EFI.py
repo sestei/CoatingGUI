@@ -8,7 +8,7 @@ import baseplot
 import numpy as np
 from PyQt4.QtCore import pyqtSlot
 from mixins import YAxisLimits, YAxisScale, XAxisSteps
-from gui.utils import to_float
+from gui.utils import to_float, float_set_from_lineedit
 
 class EFIPlot(baseplot.BasePlot):
     @staticmethod
@@ -94,7 +94,7 @@ class EFIPlotOptions(YAxisLimits, YAxisScale, XAxisSteps, baseplot.BasePlotOptio
     # ==== SLOTS ====
     @pyqtSlot()
     def on_txtLambda_editingFinished(self):
-        self.float_set('analysis.lambda', self.txtLambda.text())
+        float_set_from_lineedit(self.txtLambda, self.config, 'analysis.lambda', self)
 
 
 info = {

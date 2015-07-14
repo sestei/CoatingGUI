@@ -19,7 +19,7 @@ import wizard
 from coating import Coating
 #from plottypes import plottypes
 from config import Config
-from utils import export_data, block_signals, version_string
+from utils import export_data, block_signals, version_string, float_set_from_lineedit
 from materialDialog import MaterialDialog
 from wizard import Wizard
 
@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.config = Config.Instance()
-        self.config.load('default.cgp')
+        self.config.load_default('default.cgp')
         self.materials = materials.MaterialLibrary.Instance()
         uic.loadUi('gui/ui_mainWindow.ui', self)
  
@@ -218,19 +218,11 @@ class MainWindow(QMainWindow):
     
     @pyqtSlot()
     def on_txtLambda0_editingFinished(self):
-        text = self.txtLambda0.text()
-        try:
-            self.config.set('coating.lambda0', float(text))
-        except ValueError:
-            self.float_conversion_error(text)
+        float_set_from_lineedit(self.txtLambda0, self.config, 'coating.lambda0', self)
     
     @pyqtSlot()
     def on_txtAOI_editingFinished(self):
-        text = self.txtAOI.text()
-        try:
-            self.config.set('coating.AOI', float(text))
-        except ValueError:
-            self.float_conversion_error(text)
+        float_set_from_lineedit(self.txtAOI, self.config, 'coating.AOI', self)
 
     @pyqtSlot(int, int)
     def on_tblStack_cellChanged(self, row, col):

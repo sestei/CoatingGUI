@@ -129,4 +129,19 @@ def int_conversion_error(text, parent=None):
 def float_conversion_error(text, parent=None):
     QMessageBox.critical(parent, 'Conversion Error',
         'The input "{0}" could not be converted to an integer number.'.format(text))
-    
+
+def float_set_from_lineedit(widget, config, key, parent=None):
+    if widget.isModified():
+        text = widget.text()
+        try:
+            config.set(key, float(text))
+        except ValueError:
+            float_conversion_error(text, parent)
+
+def int_set_from_lineedit(widget, config, key, parent=None):
+    if widget.isModified():
+        text = widget.text()
+        try:
+            config.set(key, int(text))
+        except ValueError:
+            int_conversion_error(text, parent)

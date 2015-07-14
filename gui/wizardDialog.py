@@ -42,11 +42,12 @@ class WizardDialog(QDialog):
 
     @pyqtSlot()
     def on_txtNumBilayers_editingFinished(self):
-        text = self.txtNumBilayers.text()
-        try:
-            self.num_bilayers = int(text)
-        except ValueError:
-            int_conversion_error(text, self)
+        if self.txtNumBilayers.isModified():
+            text = self.txtNumBilayers.text()
+            try:
+                self.num_bilayers = int(text)
+            except ValueError:
+                int_conversion_error(text, self)
 
     @pyqtSlot(str)
     def on_cbMaterial1_currentIndexChanged(self, text):

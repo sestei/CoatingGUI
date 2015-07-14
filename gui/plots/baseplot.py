@@ -19,26 +19,6 @@ class BasePlotOptionWidget(QWidget):
         self.config = Config.Instance().view('plot.'+name)
         self.initialise_options()
 
-    def float_conversion_error(self, text):
-        QMessageBox.critical(self, 'Conversion Error',
-            'The input "{0}" could not be converted to a floating point number.'.format(text))
-    
-    def int_conversion_error(self, text):
-        QMessageBox.critical(self, 'Conversion Error',
-            'The input "{0}" could not be converted to an integer number.'.format(text))
-    
-    def float_set(self, conf, txtinput):
-        try:
-            self.config.set(conf, float(txtinput))
-        except ValueError:
-            self.float_conversion_error(txtinput)
-
-    def int_set(self, conf, txtinput):
-        try:
-            self.config.set(conf, int(txtinput))
-        except ValueError:
-            self.int_conversion_error(txtinput)
-
     def initialise_options(self):
         pass
 
