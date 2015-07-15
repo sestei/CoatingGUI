@@ -106,6 +106,12 @@
           <property name="toolTip">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter name of defined material or just refractive index.&lt;/p&gt;&lt;p&gt;Use l/n or just /n to get a lambda/n layer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
+          <property name="frameShadow">
+           <enum>QFrame::Sunken</enum>
+          </property>
+          <property name="midLineWidth">
+           <number>0</number>
+          </property>
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
@@ -122,14 +128,33 @@
            <bool>true</bool>
           </attribute>
           <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>130</number>
+           <number>125</number>
+          </attribute>
+          <attribute name="horizontalHeaderHighlightSections">
+           <bool>false</bool>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>true</bool>
           </attribute>
           <attribute name="verticalHeaderVisible">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderHighlightSections">
            <bool>false</bool>
           </attribute>
+          <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+           <bool>false</bool>
+          </attribute>
+          <row>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>2</string>
+           </property>
+          </row>
           <column>
            <property name="text">
             <string>Material/Refr. Index</string>
@@ -140,6 +165,26 @@
             <string>Thickness (nm)</string>
            </property>
           </column>
+          <item row="0" column="0">
+           <property name="text">
+            <string>Ta2O5</string>
+           </property>
+          </item>
+          <item row="0" column="1">
+           <property name="text">
+            <string>266</string>
+           </property>
+          </item>
+          <item row="1" column="0">
+           <property name="text">
+            <string>SiO2</string>
+           </property>
+          </item>
+          <item row="1" column="1">
+           <property name="text">
+            <string>127</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>

@@ -6,8 +6,6 @@
 
 import re
 
-import pdb
-
 from os.path import basename, splitext
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -17,9 +15,8 @@ import materials
 import plothandler
 import wizard
 from coating import Coating
-#from plottypes import plottypes
 from config import Config
-from utils import export_data, block_signals, version_string, float_set_from_lineedit
+from utils import export_data, block_signals, compare_versions, version_number, version_string, float_set_from_lineedit
 from materialDialog import MaterialDialog
 from wizard import Wizard
 
@@ -66,7 +63,7 @@ class MainWindow(QMainWindow):
         if filename:
             self.filename = filename
 
-        self.setWindowTitle('Coating GUI - {0}{1}'.format(self.filename, flag))
+        self.setWindowTitle('CoatingGUI - {0}{1}'.format(self.filename, flag))
 
     def initialise_materials(self):
         self.materials.load_materials()
@@ -375,6 +372,10 @@ class MainWindow(QMainWindow):
         if filename:
             self.config.load(filename)
             self.update_title(basename(filename))
+
+            if compare_versions(version_number, self.config.get('version_number')) < 0:
+                QMessageBox.warning(self, 'Newer file version detected',
+                    'This coating project was created with a newer version of CoatingGUI. This may or may not work out well...', QMessageBox.Ok)
             self.initialise_plotoptions()
             self.initialise_materials()
             self.initialise_stack()
@@ -383,8 +384,6 @@ class MainWindow(QMainWindow):
     def on_actionAbout_triggered(self):
         QMessageBox.about(self, version_string,
             """
-(c) 2014-2015, Sebastian Steinlechner, sebastian.steinlechner@ligo.org
-
 Please visit GitHub to obtain the latest version of this software:
 https://www.github.com/sestei/dielectric
 

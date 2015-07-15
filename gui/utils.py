@@ -11,6 +11,19 @@ from PyQt4.QtGui import QMessageBox
 version_number = {'major': 0, 'minor': 2}
 version_string = 'CoatingGUI v{major}.{minor}'.format(**version_number)
 
+def compare_versions(v1, v2):
+    if v1['major'] > v2['major']:
+        return 1
+    elif v1['major'] < v2['major']:
+        return -1
+    else:
+        if v1['minor'] > v2['minor']:
+            return 1
+        elif v1['minor'] < v2['minor']:
+            return -1
+        else:
+            return 0
+
 # This Singleton implementation is taken from
 # http://stackoverflow.com/questions/42558/python-and-the-singleton-pattern
 # by Paul Manta, licensed as CC-BY-SA 3.0
