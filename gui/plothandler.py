@@ -10,8 +10,9 @@ from importlib import import_module
 
 def collect_plots():
     plots = {}
-    for fn in glob('gui/plots/plot_*.py'):
+    for fn in glob('gui/plots/ui_*.ui'):
         mod = os.path.basename(os.path.splitext(fn)[0])
+        mod = mod.replace('ui_plot', 'plot_')
         m = import_module('gui.plots.'+mod)
         plots.update(m.info)
     return plots

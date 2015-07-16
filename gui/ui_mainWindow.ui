@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>CoatingGUI</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icons/coatinggui.ico</normaloff>icons/coatinggui.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
     <item>
