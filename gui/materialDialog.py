@@ -7,9 +7,9 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
-from config import Config
-from materials import MaterialLibrary
-from utils import to_float
+from utils.config import Config
+from dielectric.materials import MaterialLibrary
+from helpers import to_float
 import math
 
 class UnnamedMaterialException(Exception):

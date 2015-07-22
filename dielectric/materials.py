@@ -4,10 +4,11 @@
 # http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-from utils import Singleton, DataFileWrapper
 from numpy import sqrt, inf
-from config import Config
 from copy import copy
+from utils.singleton import Singleton
+from utils.datafile import DataFileWrapper
+from utils.config import Config
 
 class MaterialAlreadyDefined(Exception):
     pass
@@ -24,10 +25,11 @@ class MaterialLibrary(object):
         self._materials = {}
         self.config = Config.Instance()
 
-    def load_materials(self, matdict=None):
+    def load_materials(self, matdict=None, config=None):
         if not matdict:
             # load all defined materials from config
-            matdict = self.config.get('materials')
+            cfg = config if config else self.config
+            matdict = cfg.get('materials')
             # since we load directly from a fresh config, no need to unregister things
             self._materials = {}
         for name in matdict.iterkeys():

@@ -30,7 +30,7 @@ class PhasePlot(baseplot.BasePlot):
         AOI = self.config.parent.get('coating.AOI')
         for step in range(len(X)):
             stack = coating.create_stack(X[step], AOI=AOI)
-            Y[step,:] = stack.phase(X[step])
+            Y[step,:] = stack.phase()
 
         handles = self.handle.plot(X,(np.unwrap(Y, axis=0)%(2*np.pi))*180/np.pi)
 

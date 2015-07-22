@@ -37,7 +37,7 @@ class R_LambdaPlot(baseplot.BasePlot):
         AOI = self.config.parent.get('coating.AOI')
         for step in range(len(X)):
             stack = coating.create_stack(X[step], AOI=AOI)
-            Y[step,:] = stack.reflectivity(X[step])
+            Y[step,:] = stack.reflectivity()
 
         auto_y = self.config.get('yaxis.limits') == 'auto'
         

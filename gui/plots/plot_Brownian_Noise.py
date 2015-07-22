@@ -10,7 +10,7 @@ from PyQt4.QtCore import pyqtSlot
 import matplotlib as mpl
 
 from mixins import XAxisLimits, XAxisSteps
-from gui.utils import to_float, float_set_from_lineedit
+from gui.helpers import to_float, float_set_from_lineedit
 
 
 class BrownianNoisePlot(baseplot.BasePlot):
