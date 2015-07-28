@@ -11,22 +11,23 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 
-import materials
 import plothandler
 import wizard
-from coating import Coating
-from config import Config
-from utils import export_data, block_signals, compare_versions, version_number, version_string, float_set_from_lineedit
+from dielectric.materials import MaterialLibrary
+from dielectric.coating import Coating
+from utils.config import Config
+from utils import compare_versions, version_number, version_string
+from helpers import export_data, block_signals, float_set_from_lineedit
 from materialDialog import MaterialDialog
 from wizard import Wizard
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, argv, parent=None):
         super(MainWindow, self).__init__(parent)
         self.config = Config.Instance()
         self.config.load_default('default.cgp')
-        self.materials = materials.MaterialLibrary.Instance()
+        self.materials = MaterialLibrary.Instance()
         uic.loadUi('gui/ui_mainWindow.ui', self)
  
         self.plotHandle = self.pltMain.figure.add_subplot(111)
@@ -37,11 +38,18 @@ class MainWindow(QMainWindow):
             lambda ev: self.mpl_on_mouse_move(ev))
 
         self.update_title('untitled')
-        self.config.modified.connect(self.handle_modified)
+        self.config.set_callback(self.handle_modified)
 
         self.empty_plotoptions_widget = self.gbPlotWidget.layout().itemAt(0).widget()
         self.plots = plothandler.collect_plots()
 
+        if len(argv) > 1:
+            fn = str(argv.last())
+            try:
+                self.config.load(fn)
+            except IOError, e:
+                QMessageBox.critical(self, 'Could not open file', str(e))
+        
         self.initialise_plotoptions()
         self.initialise_materials()
         self.initialise_stack()
@@ -122,10 +130,7 @@ class MainWindow(QMainWindow):
         return map(list, zip(stack_n, stack_d))
 
     def build_coating(self):
-        substrate = str(self.cbSubstrate.currentText())
-        superstrate = str(self.cbSuperstrate.currentText())
-        
-        return Coating(superstrate, substrate, self.get_layers())
+        return Coating.create_from_config(self.config)
         
     def closeEvent(self, event):
         if self.modified and not self.config.get('do_not_ask_on_quit'):
@@ -225,15 +230,23 @@ class MainWindow(QMainWindow):
     def on_tblStack_cellChanged(self, row, col):
         txt = self.tblStack.item(row, col).text()
         if col == 1:
+            xlambda = 0.0
             # auto-convert L/x or l/x or just /x to lambda/x thicknesses
             m = re.match('^[Ll]?/(\d+)$', txt)
             if m:
-                lox = int(m.groups()[0])
+                xlambda = 1.0/int(m.groups()[0])
+            else:
+                # auto-convert *x to x*lambda/4 thicknesses
+                m = re.match('^\*([\d\.]+)$', txt)
+                if m:
+                    xlambda = 0.25*float(m.groups()[0])
+
+            if xlambda > 0.0:
                 mat = self.tblStack.item(row, col-1).text()
                 try:
                     mat = self.materials.get_material(str(mat))
                     lambda0 = self.config.get('coating.lambda0')
-                    t_lox = lambda0/(mat.n(lambda0) * lox)
+                    t_lox = xlambda * lambda0/mat.n(lambda0)
                     with block_signals(self.tblStack) as tbl:
                         tbl.item(row, col).setText('{:.1f}'.format(t_lox))
                 except materials.MaterialNotDefined:

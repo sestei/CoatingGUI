@@ -7,7 +7,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
-from utils import int_conversion_error, float_conversion_error
+from helpers import int_conversion_error, float_conversion_error
 
 # actions
 WIZARD_BILAYERS = 1
