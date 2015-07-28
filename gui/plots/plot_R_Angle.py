@@ -40,7 +40,7 @@ class R_AnglePlot(baseplot.BasePlot):
 
         for step in range(len(X)):
             stack = coating.create_stack(lambda0, AOI=X[step])
-            Y[step,:] = stack.reflectivity(lambda0)
+            Y[step,:] = stack.reflectivity()
 
         auto_y = self.config.get('yaxis.limits') == 'auto'
         

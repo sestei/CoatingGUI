@@ -6,24 +6,31 @@
 
 import yaml
 import copy
-from utils import Singleton, version_number
-from PyQt4.QtCore import QObject, pyqtSignal
+from singleton import Singleton
+from utils import version_number
 
-@Singleton
-class Config(QObject):
-    modified = pyqtSignal()
+class BasicConfig(object):
+    _callback = None
 
-    def __init__(self):
-        QObject.__init__(self)
+    def __init__(self, filename=None):
         self._config = {}
         self._default = {}
         self._modified = False
+        if filename:
+            self.load(filename)
     
+    def set_callback(self, callback):
+        self._callback = callback
+
+    def signal_callback(self):
+        if self._callback:
+            self._callback()
+
     def set(self, prop, value):
         _recursive_set(self._config, prop, value)
         if not self._modified:
             self._modified = True
-            self.modified.emit()
+            self.signal_callback()
 
     def get(self, prop):
         return _recursive_get(self._config, prop)
@@ -32,7 +39,7 @@ class Config(QObject):
         _recursive_remove(self._config, prop)
         if not self._modified:
             self._modified = True
-            self.modified.emit()
+            self.signal_callback()
 
     def view(self, path):
         return ConfigView(path)
@@ -54,6 +61,19 @@ class Config(QObject):
             self.set('version_number', version_number)
             yaml.dump(self._config, fp, default_flow_style=False)
             self._modified = False
+
+    @staticmethod
+    def save_dict(thedict, filename):
+        config = BasicConfig()
+        config._config = thedict
+        config.save(filename)
+
+
+# Singleton version of the above BasicConfig object,
+# useful for long-running applications
+@Singleton
+class Config(BasicConfig):
+    pass
 
 
 def _recursive_set(thedict, key, value):

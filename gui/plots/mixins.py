@@ -5,7 +5,7 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 from PyQt4.QtCore import pyqtSlot
-from gui.utils import to_float, float_set_from_lineedit, int_set_from_lineedit
+from gui.helpers import to_float, float_set_from_lineedit, int_set_from_lineedit
 
 
 class XAxisLimits(object):

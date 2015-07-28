@@ -17,7 +17,7 @@ def delta(d, n, alpha, wavelength):
     with index of refraction n
     """
     k = n*2*np.pi/wavelength
-    return k*d * np.cos(alpha) #TODO unsolved question: should this be "*" or "/"???
+    return k*d * np.cos(alpha)
 
 def M(rho, delta):
     """
@@ -29,13 +29,21 @@ def M(rho, delta):
                     * np.matrix([[np.exp(-1j*delta), 0], [0, np.exp(1j*delta)]]))
 
 class Stack(object):
-    """docstring for Stack"""
-    def __init__(self, stacks_n, stacks_d, alpha_0=0.0):
+    """
+    class Stack
+
+    Stack represents a concrete instance of a coating for a specific wavelength,
+    i.e. with refractive index values for this wavelength.
+    This then allows to calculate reflectivity etc. at this wavelength
+    and AOI.
+    """
+    def __init__(self, stacks_n, stacks_d, lambda0, alpha_0=0.0):
         self._layers = len(stacks_n)
 
         self._stacks_n = np.asarray(stacks_n)
         self._stacks_d = np.asarray(stacks_d)
         self._alpha_0 = np.deg2rad(alpha_0)
+        self._lambda_0 = lambda0
         self._stacks_rho = np.zeros(self._layers-1)
         self._stacks_a = np.zeros(self._layers-1)
         self._valid = False
@@ -81,7 +89,7 @@ class Stack(object):
         self._stacks_rho = np.array(rhos)
         self._valid = True
 
-    def _propagate(self, wavelength):
+    def _propagate(self):
         if not self.is_valid():
             self.update()
         Ms = np.eye(2)
@@ -90,14 +98,14 @@ class Stack(object):
         deltas[0:-1] = delta(self._stacks_d,
                            self._stacks_n[1:-1],
                            self._stacks_a[0:-1],
-                           wavelength)
+                           self._lambda_0)
         for r, p in zip(self._stacks_rho, deltas):
             Ms = Ms * M(r[0], p)
             Mp = Mp * M(r[1], p)
 
         return Ms, Mp
 
-    def efi(self, wavelength, steps=30):
+    def efi(self, steps=30):
         # EFI calculation following Arnon/Baumeister 1980
         # TODO: this needs to be combined with the above calculation, can't be
         #       that difficult!
@@ -108,7 +116,7 @@ class Stack(object):
                               [1j*q_i*np.sin(beta_i), np.cos(beta_i)]])
 
         def beta_i(theta_i, n_i, h_i):
-            return 2*np.pi/wavelength*np.cos(theta_i)*n_i*h_i
+            return 2*np.pi/self._lambda_0*np.cos(theta_i)*n_i*h_i
 
         def q_i(n_i):
             return n_i # for now, but see (5) and (6) of Arnon/Baumeister 1980
@@ -141,9 +149,9 @@ class Stack(object):
         for ii in range(0, self._layers):
             n_i = self._stacks_n[ii]
             if ii == 0:
-                deltaL = -wavelength / 2.0 / n_i / steps
+                deltaL = -self._lambda_0 / 2.0 / n_i / steps
             elif ii == self._layers-1:
-                deltaL = wavelength / 2.0 / n_i / steps
+                deltaL = self._lambda_0 / 2.0 / n_i / steps
             else:
                 deltaL = self._stacks_d[ii-1] / steps
             
@@ -163,15 +171,15 @@ class Stack(object):
 
         return (X, E2/E0p2(myM))
 
-    def reflectivity(self, wavelength):
-        Ms, Mp = self._propagate(wavelength)
+    def reflectivity(self):
+        Ms, Mp = self._propagate()
 
         rs = abs(Ms[1,0] / Ms[0,0])
         rp = abs(Mp[1,0] / Mp[0,0])
         return (rs**2, rp**2)
 
-    def phase(self, wavelength):
-        Ms, Mp = self._propagate(wavelength)
+    def phase(self):
+        Ms, Mp = self._propagate()
 
         phis = -np.angle(Ms[1,0] / Ms[0,0])
         phip = -np.angle(Mp[1,0] / Mp[0,0])

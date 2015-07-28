@@ -8,7 +8,7 @@ import baseplot
 import numpy as np
 from PyQt4.QtCore import pyqtSlot
 from mixins import YAxisLimits, YAxisScale, XAxisSteps
-from gui.utils import to_float, float_set_from_lineedit
+from gui.helpers import to_float, float_set_from_lineedit
 
 class EFIPlot(baseplot.BasePlot):
     @staticmethod
@@ -52,8 +52,7 @@ class EFIPlot(baseplot.BasePlot):
         ax2.set_ylabel('Normalised Electric Field Intensity')
         if self.config.get('yaxis.scale') == 'log':
             ax2.set_yscale('log')
-        Xefi,Yefi = stack.efi(wavelength,
-                              self.config.get('xaxis.steps'))
+        Xefi,Yefi = stack.efi(self.config.get('xaxis.steps'))
         handles += ax2.plot(Xefi,Yefi, color=self.colors[0])
         if self.config.get('yaxis.limits') == 'user':
             ymin = self.config.get('yaxis.min')
