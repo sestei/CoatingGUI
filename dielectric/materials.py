@@ -75,7 +75,7 @@ class MaterialLibrary(object):
 
 class Material(object):
     def __init__(self, name=None, n=0.0, B=None, C=None, n_file='', Y=inf, sigma=0.0, phi=0.0, notes=''):
-        self.name = name
+        self.name = name if name else str(n)
         self.notes = notes
         self.n_file = n_file
         self.n_data = None
@@ -88,7 +88,7 @@ class Material(object):
         self.sigma = float(sigma)
         self.phi = float(phi)
 
-        if self.name:
+        if name:
             MaterialLibrary.Instance().register(self)
         
     def n(self, lambda0):

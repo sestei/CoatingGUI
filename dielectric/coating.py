@@ -8,35 +8,48 @@ import numpy as np
 from copy import deepcopy
 from materials import MaterialLibrary
 from stacks import Stack
+from itertools import izip
 
 np.seterr(invalid='raise')
 
 class Coating(object):
-    def __init__(self, superstrate, substrate, layers):
+    def __init__(self, superstrate, substrate, layers, lambda0 = 0.0):
         self.superstrate = MaterialLibrary.Instance().get_material(superstrate)
         self.substrate = MaterialLibrary.Instance().get_material(substrate)
         self.layers = [Layer(m, t) for m, t in layers]
+        self.lambda0 = lambda0
         self.update_thickness()
 
-    @staticmethod
-    def create_from_config(config):
+    @classmethod
+    def create_from_config(cls, config):
         MaterialLibrary.Instance().load_materials(config=config)
         superstrate = config.get('coating.superstrate')
         substrate = config.get('coating.substrate')
         layers = config.get('coating.layers')
-        return Coating(superstrate, substrate, layers)
+        lambda0 = config.get('coating.lambda0')
+        return cls(superstrate, substrate, layers, lambda0)
 
-    @staticmethod
-    def create_from_file(filename):
-        from utils.config import Config
-        config = Config.Instance()
-        config.load(filename)
-        return Coating.create_from_config(config)
+    @classmethod
+    def create_from_file(cls, filename):
+        from utils.config import BasicConfig
+        return cls.create_from_config(BasicConfig(filename))
+
+    def save_to_file(self, filename):
+        from utils.config import BasicConfig
+        cdict = {}
+        cdict['layers'] = [ [l.material.name, l.thickness] for l in self.layers]
+        cdict['lambda0'] = self.lambda0
+        cdict['AOI'] = 0.0 #TODO!!!
+        cdict['substrate'] = self.substrate.name
+        cdict['superstrate'] = self.superstrate.name
+        BasicConfig.save_dict({'coating': cdict}, filename)
         
-    def create_stack(self, lambda0, AOI=0.0):
+    def create_stack(self, lambda0=0.0, AOI=0.0):
         """
         Returns the optical stack for a specific wavelength and AOI.
         """
+        if lambda0 == 0.0:
+            lambda0 = self.lambda0
         stacks_n = np.zeros(len(self.layers)+2)
         stacks_d = np.zeros(len(self.layers))
         stacks_n[0] = self.superstrate.n(lambda0)
@@ -68,6 +81,16 @@ class Coating(object):
         """
         mylayers = [deepcopy(l) for l in layers*repeat]
         self.layers.extend(mylayers)
+        self.update_thickness()
+
+    def adjust_layers(self, thicknesses):
+        """
+        Adjusts thickness of layers to the new values given in array d.
+        """
+        if len(thicknesses) != len(self.layers):
+            raise Exception('Given thicknesses do not match number of layers.')
+        for l, t in izip(self.layers, thicknesses):
+            l.thickness = t
         self.update_thickness()
 
     def yPara(self):
@@ -135,7 +158,7 @@ class Layer(object):
 
     @thickness.setter
     def thickness(self, value):
-        self._thickness = value
+        self._thickness = float(value)
         self._d = value * 1e-9
 
 
