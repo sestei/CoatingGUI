@@ -5,10 +5,15 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 import sys
+import argparse
 from gui.mainWindow import MainWindow
 from PyQt4 import QtGui
 
-qApp = QtGui.QApplication(sys.argv) 
-Window = MainWindow(qApp.arguments())
+qApp = QtGui.QApplication(sys.argv)
+
+parser = argparse.ArgumentParser(prog='CoatingGUI.py')
+parser.add_argument('-p', '--project', help='open CoatingGUI project file PROJECT')
+args = parser.parse_args()
+Window = MainWindow(vars(args))
 Window.show()
 qApp.exec_()

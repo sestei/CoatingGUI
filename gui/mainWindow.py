@@ -21,9 +21,14 @@ from helpers import export_data, block_signals, float_set_from_lineedit
 from materialDialog import MaterialDialog
 from wizard import Wizard
 
+def add_extension_if_missing(filename, ext):
+    if filename.endswith(ext):
+        return filename
+    else:
+        return filename + ext
 
 class MainWindow(QMainWindow):
-    def __init__(self, argv, parent=None):
+    def __init__(self, options, parent=None):
         super(MainWindow, self).__init__(parent)
         self.config = Config.Instance()
         self.config.load_default('default.cgp')
@@ -43,9 +48,9 @@ class MainWindow(QMainWindow):
         self.empty_plotoptions_widget = self.gbPlotWidget.layout().itemAt(0).widget()
         self.plots = plothandler.collect_plots()
 
-        if len(argv) > 1:
-            fn = str(argv.last())
+        if options['project']:
             try:
+                fn = add_extension_if_missing(options['project'], '.cgp')
                 self.config.load(fn)
             except IOError, e:
                 QMessageBox.critical(self, 'Could not open file', str(e))
