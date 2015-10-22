@@ -156,6 +156,10 @@ class Layer(object):
     def thickness(self):
         return self._thickness
 
+    @property
+    def d(self):
+        return self._d
+
     @thickness.setter
     def thickness(self, value):
         self._thickness = float(value)

@@ -195,12 +195,24 @@
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
            <widget class="QPushButton" name="btnAddLayer">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string/>
             </property>
             <property name="icon">
              <iconset>
               <normaloff>icons/list-add.svg</normaloff>icons/list-add.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -213,6 +225,12 @@
              <iconset>
               <normaloff>icons/list-remove.svg</normaloff>icons/list-remove.svg</iconset>
             </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
            </widget>
           </item>
           <item>
@@ -223,6 +241,12 @@
             <property name="icon">
              <iconset>
               <normaloff>icons/Gnome-edit-delete.svg</normaloff>icons/Gnome-edit-delete.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -247,18 +271,8 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>90</width>
-              <height>0</height>
-             </size>
-            </property>
             <property name="text">
              <string>Wizard...</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>icons/Gnome-applications-science.svg</normaloff>icons/Gnome-applications-science.svg</iconset>
             </property>
            </widget>
           </item>
@@ -570,7 +584,7 @@
      <x>0</x>
      <y>0</y>
      <width>1064</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
