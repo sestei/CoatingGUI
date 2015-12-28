@@ -15,8 +15,8 @@ import plothandler
 import wizard
 from dielectric.materials import MaterialLibrary
 from dielectric.coating import Coating
-from utils.config import Config
-from utils import compare_versions, version_number, version_string
+from dielectric.utils.config import Config
+from dielectric.utils import compare_versions, version_number, version_string
 from helpers import export_data, block_signals, float_set_from_lineedit
 from materialDialog import MaterialDialog
 from wizard import Wizard

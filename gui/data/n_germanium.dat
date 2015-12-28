@@ -1,0 +1,13 @@
+# Germanium refractive index
+# Reference: Frey, Leviton, Madison (2006)
+#            http://arxiv.org/ftp/physics/papers/0606/0606168.pdf
+# nm    refr index @ 295K
+1800    4.14224
+2000    4.10973
+2500    4.06693
+3000    4.04579
+3500    4.03355
+4000    4.02577
+4500    4.02051
+5000    4.01678
+5500    4.01404

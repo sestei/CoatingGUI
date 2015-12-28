@@ -6,7 +6,7 @@
 
 import unittest
 import os
-from utils import *
+from dielectric.utils import *
 
 def open_file(filename):
     return DataFileWrapper(filename)

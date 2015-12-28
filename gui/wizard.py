@@ -4,7 +4,7 @@
 # http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-from utils.config import Config
+from dielectric.utils.config import Config
 from dielectric.materials import MaterialLibrary
 from wizardDialog import *
 

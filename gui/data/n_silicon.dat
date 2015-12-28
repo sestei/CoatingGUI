@@ -1,0 +1,17 @@
+# Silicon refractive index
+# Reference: Frey, Leviton, Madison (2006)
+#            http://arxiv.org/ftp/physics/papers/0606/0606168.pdf
+# nm    refr index @ 295K
+1100    3.54394
+1200    3.52253
+1300    3.50616
+1400    3.49335
+1500    3.48314
+2000    3.45352
+2500    3.44011
+3000    3.43293
+3500    3.42864
+4000    3.42589
+4500    3.42404
+5000    3.42274
+5500    3.42180
