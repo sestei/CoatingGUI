@@ -13,10 +13,10 @@ from PyQt4 import uic
 
 import plothandler
 import wizard
+from version import version_number, version_string, compare_versions
 from dielectric.materials import MaterialLibrary
 from dielectric.coating import Coating
 from dielectric.utils.config import Config
-from dielectric.utils import compare_versions, version_number, version_string
 from helpers import export_data, block_signals, float_set_from_lineedit
 from materialDialog import MaterialDialog
 from wizard import Wizard
@@ -373,6 +373,7 @@ class MainWindow(QMainWindow):
         if filename:
             geometry = self.saveGeometry().toHex().data()
             self.config.set('window_geometry', geometry)
+            self.config.set('version', version_number)
             self.config.save(filename)
             self.update_title(basename(filename))
 
@@ -391,7 +392,8 @@ class MainWindow(QMainWindow):
             self.config.load(filename)
             self.update_title(basename(filename))
 
-            if compare_versions(version_number, self.config.get('version_number')) < 0:
+            filever = self.config.get('version_number')
+            if filever and compare_versions(version_number, filever) < 0:
                 QMessageBox.warning(self, 'Newer file version detected',
                     'This coating project was created with a newer version of CoatingGUI. This may or may not work out well...', QMessageBox.Ok)
             self.initialise_plotoptions()

@@ -9,7 +9,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 from dielectric.utils.config import Config
-from dielectric.utils import version_string
+from gui.version import version_string
 
 class BasePlotOptionWidget(QWidget):
     def __init__(self, name, parent):
