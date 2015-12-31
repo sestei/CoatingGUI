@@ -1,19 +1,15 @@
-dielectric / CoatingGUI
-=======================
+CoatingGUI
+==========
 
 Dielectric mirror coating simulation tool
-
-The goal of this project is to provide an easy interface for coating
-simulations, tailored to the needs of the gravitational wave community.
-Especially, this means that this project is focussed on rather simple (design-
-wise) single-wavelength coatings rather than e.g. dispersion-optimised
-coatings. However, it aims to include coating thermal noise calculations.
 
 Status
 ------
 - basic work flow implemented
-- optical part more or less complete
-- room-temperature Brownian thermal noise calculation
+- create arbitrary multi-layer coatings
+- define optical materials based on refractive index, Sellmeier coefficients or
+  measured data
+- calculates reflectivity, EFI, room-temperature Brownian thermal noise
 
 Screenshots
 -----------
@@ -33,6 +29,14 @@ above coating, for zero degrees angle of incidence.
 <img src="material_editor.png" />
 
 Thin-film and bulk materials can be defined in a graphical editor, here showing various possibilities to enter the refractive index: as a single value that is used across all wavelengths, as a Sellmeier equation, or as datapoints that are read in from a file.
+
+Prerequisites
+-------------
+
+- Python >= 2.7
+- PyQT 4
+- numpy
+- coatingtk (https://github.com/sestei/coatingtk)
 
 ---
 -- Sebastian Steinlechner, 2015

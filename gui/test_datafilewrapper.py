@@ -6,7 +6,7 @@
 
 import unittest
 import os
-from dielectric.utils import *
+from coatingtk.utils import *
 
 def open_file(filename):
     return DataFileWrapper(filename)

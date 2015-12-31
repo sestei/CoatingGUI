@@ -7,8 +7,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
-from dielectric.utils.config import Config
-from dielectric.materials import MaterialLibrary
+from coatingtk.utils.config import Config
+from coatingtk.materials import MaterialLibrary
 from helpers import to_float
 import math
 

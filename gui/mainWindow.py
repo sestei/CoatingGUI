@@ -14,9 +14,9 @@ from PyQt4 import uic
 import plothandler
 import wizard
 from version import version_number, version_string, compare_versions
-from dielectric.materials import MaterialLibrary
-from dielectric.coating import Coating
-from dielectric.utils.config import Config
+from coatingtk.materials import MaterialLibrary
+from coatingtk.coating import Coating
+from coatingtk.utils.config import Config
 from helpers import export_data, block_signals, float_set_from_lineedit
 from materialDialog import MaterialDialog
 from wizard import Wizard
@@ -405,7 +405,7 @@ class MainWindow(QMainWindow):
         QMessageBox.about(self, version_string,
             """
 Please visit GitHub to obtain the latest version of this software:
-https://www.github.com/sestei/dielectric
+https://www.github.com/sestei/CoatingGUI
 
 This work is licensed under the Creative Commons Attribution-NonCommercial-
 ShareAlike 4.0 International License. To view a copy of this license, visit

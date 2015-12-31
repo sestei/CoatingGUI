@@ -8,7 +8,7 @@ import abc
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
-from dielectric.utils.config import Config
+from coatingtk.utils.config import Config
 from gui.version import version_string
 
 class BasePlotOptionWidget(QWidget):
