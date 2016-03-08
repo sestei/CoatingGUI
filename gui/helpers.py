@@ -36,9 +36,6 @@ def export_data(filename, xdata, ydata, labels):
     header = version_string + "\n\n" + "\t".join(labels)
     np.savetxt(filename, data.T, delimiter="\t", fmt='%.5g', header=header)
 
-def get_L_H_designation(material_names, coating, lambda0):
-    materials = [l.material for l in coating.layers]
-
 def get_designations(coating, lambda0):
     materials = [l.material for l in coating.layers]
     material_names = list(set([m.name for m in materials]))
@@ -57,9 +54,6 @@ def get_designations(coating, lambda0):
     return designations
 
 def export_stack_formula(coating, lambda0, filename):
-    # use frozenset to create unique set of materials?
-    # can then build dictionary which assigns either H and L to those
-    # materials, or something as simple as A, B, C, D, ... if many materials
     with open(filename, 'w') as fp:
         fp.write('Superstrate: {0}\n'.format(coating.superstrate.name))
         fp.write('Substrate: {0}\n'.format(coating.substrate.name))
