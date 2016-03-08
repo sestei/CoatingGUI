@@ -17,7 +17,8 @@ from version import version_number, version_string, compare_versions
 from coatingtk.materials import MaterialLibrary
 from coatingtk.coating import Coating
 from coatingtk.utils.config import Config
-from helpers import export_data, block_signals, float_set_from_lineedit
+from helpers import export_data, block_signals, float_set_from_lineedit, export_stack_formula
+
 from materialDialog import MaterialDialog
 from wizard import Wizard
 
@@ -335,6 +336,19 @@ class MainWindow(QMainWindow):
                             splitext(self.filename)[0]+'.pdf', 'PDF (*.pdf)');
         if filename:
             self.pltMain.figure.savefig(str(filename))
+    
+    @pyqtSlot()
+    def on_actionExportFormula_triggered(self):
+        filename = QFileDialog.getSaveFileName(self, 'Export stack formula',
+                            splitext(self.filename)[0]+'.txt', 'Text file (*.txt)');
+        if filename:
+            try:
+                coating = self.build_coating()
+            except materials.MaterialNotDefined as e:
+                QMessageBox.critical(self, 'Material Error', str(e))
+                return
+            export_stack_formula(coating, self.config.get('coating.lambda0'),
+                                 str(filename))
 
     @pyqtSlot()
     def on_actionExportData_triggered(self):

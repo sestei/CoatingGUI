@@ -613,6 +613,7 @@
     </property>
     <addaction name="actionExportData"/>
     <addaction name="actionExport"/>
+    <addaction name="actionExportFormula"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -658,6 +659,11 @@
   <action name="actionExportData">
    <property name="text">
     <string>Export data...</string>
+   </property>
+  </action>
+  <action name="actionExportFormula">
+   <property name="text">
+    <string>Export stack formula...</string>
    </property>
   </action>
  </widget>
