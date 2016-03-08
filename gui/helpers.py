@@ -7,6 +7,7 @@
 import numpy as np
 from contextlib import contextmanager
 from PyQt4.QtGui import QMessageBox
+from version import version_string
 
 
 def export_data(filename, xdata, ydata, labels):
