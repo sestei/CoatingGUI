@@ -21,7 +21,8 @@ class EFIPlot(baseplot.BasePlot):
     
     def plot(self, coating):
         wavelength = self.config.get('analysis.lambda')
-        stack = coating.create_stack(wavelength)
+        AOI = self.config.parent.get('coating.AOI')
+        stack = coating.create_stack(wavelength, AOI=AOI)
         
         handles = [] # holds the individual curves
 
@@ -52,8 +53,10 @@ class EFIPlot(baseplot.BasePlot):
         ax2.set_ylabel('Normalised Electric Field Intensity')
         if self.config.get('yaxis.scale') == 'log':
             ax2.set_yscale('log')
-        Xefi,Yefi = stack.efi(self.config.get('xaxis.steps'))
-        handles += ax2.plot(Xefi,Yefi, color=self.colors[0])
+        Xefi_s,Yefi_s = stack.efi(self.config.get('xaxis.steps'), 's')
+        Xefi_p,Yefi_p = stack.efi(self.config.get('xaxis.steps'), 'p')
+        handles += ax2.plot(Xefi_s,Yefi_s, color=self.colors[0])
+        handles += ax2.plot(Xefi_p,Yefi_p, color=self.colors[1])
         if self.config.get('yaxis.limits') == 'user':
             ymin = self.config.get('yaxis.min')
             ymax = self.config.get('yaxis.max')
@@ -77,7 +80,7 @@ class EFIPlot(baseplot.BasePlot):
         self.handle.set_ylim(0, np.max(stack.stacks_n)+1)
         self.handle.set_ylabel('Refractive Index')
         self.handle.set_xlabel('Position (nm)')
-        self.add_legend(handles, ['Refr. index', 'EFI s-pol'])
+        self.add_legend(handles, ['Refr. index', 'EFI s-pol', 'EFI p-pol'])
         self.add_copyright()
        
 

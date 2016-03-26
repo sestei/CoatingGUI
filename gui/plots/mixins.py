@@ -116,5 +116,5 @@ class XAxisSteps(object):
 
     @pyqtSlot()
     def on_txtXSteps_editingFinished(self):
-        float_set_from_lineedit(self.txtXSteps, self.config, 'xaxis.steps', self)
+        int_set_from_lineedit(self.txtXSteps, self.config, 'xaxis.steps', self)
 
