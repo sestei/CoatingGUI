@@ -71,7 +71,7 @@ materials:
     C:
     - 0.0054804
     - 0.0089519
-    - 0.056614
+    - 566.14
     notes: Thorlabs, ordinary ray
   N-BK7:
     B:
