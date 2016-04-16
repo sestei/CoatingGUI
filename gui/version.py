@@ -4,7 +4,7 @@
 # http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-version_number = {'major': 0, 'minor': 2}
+version_number = {'major': 0, 'minor': 3}
 version_string = 'CoatingGUI v{major}.{minor}'.format(**version_number)
 
 
